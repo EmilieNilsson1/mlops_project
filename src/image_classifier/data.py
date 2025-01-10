@@ -38,7 +38,7 @@ class MyDataset(Dataset):
             if os.path.isdir(class_folder):
                 # Iterate over all images inside the class folder
                 for image_name in os.listdir(class_folder):
-                    if image_name.endswith('.jpg'):  # Assuming image format is JPG
+                    if image_name.endswith('.jpg', '.jpeg', '.png'):  # Assuming image format is JPG
                         image_path = os.path.join(class_folder, image_name)
                         self.data.append([image_name, class_label])  # Append image name and corresponding animal class
 
