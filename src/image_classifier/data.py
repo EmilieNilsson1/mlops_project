@@ -3,6 +3,7 @@ from pathlib import Path
 import pandas as pd
 import translate
 import typer
+from PIL import Image
 
 from torch.utils.data import Dataset
 
@@ -22,7 +23,12 @@ class MyDataset(Dataset):
     def __getitem__(self, index: int):
         """Return a given sample from the dataset."""
         image_name, label = self.data[index]
-        return image_name, label
+        # Construct the full image path
+        image_path = os.path.join(self.data_path, label, image_name)
+        # Open the image and apply the transformation to tensor
+        image = Image.open(image_path)
+        image_tensor = self.transform(image)
+        return image_tensor, label
 
     def preprocess(self) -> None:
         """Preprocess the raw data and save it to the output folder."""
@@ -38,7 +44,8 @@ class MyDataset(Dataset):
             if os.path.isdir(class_folder):
                 # Iterate over all images inside the class folder
                 for image_name in os.listdir(class_folder):
-                    if image_name.endswith('.jpg', '.jpeg', '.png'):  # Assuming image format is JPG
+                    # Check if the file is an image and not a hidden system file
+                    if image_name.lower().endswith(('.jpg', '.jpeg', '.png')) and not image_name.startswith('.'):
                         image_path = os.path.join(class_folder, image_name)
                         self.data.append([image_name, class_label])  # Append image name and corresponding animal class
 
