@@ -3,7 +3,7 @@ import os
 import pytorch_lightning as pl
 import wandb
 
-from data import DataModule
+from data import AnimalDataModule
 from model import ImageClassifier
 
 def main():
@@ -13,13 +13,12 @@ def main():
 
     trainer = pl.Trainer(
                         max_epochs=10,
-                        log_every_n_steps=10,
-                        logger=pl.loggers.WandbLogger(project=os.environ['WANDB_PROJECT'], entity=os.environ['WANDB_ENTITY'])
+                        log_every_n_steps=10
+                        #logger=pl.loggers.WandbLogger(project=os.environ['WANDB_PROJECT'], entity=os.environ['WANDB_ENTITY'])
     )
 
     trainer.fit(model, 
-                train_dataloaders=DataModule().train_dataloader(), 
-                val_dataloaders=DataModule().val_dataloader())
+                AnimalDataModule('data/processed/translated_image_labels.csv', 'data/processed/images'))
 
 if __name__ == "__main__":
     main()

@@ -1,69 +1,65 @@
 import os
 from pathlib import Path
 import pandas as pd
-import translate
-import typer
 from PIL import Image
+from torch.utils.data import Dataset, DataLoader
+import pytorch_lightning as pl
+from torchvision import transforms
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torchvision.models import resnet18
+import typer
 
-from torch.utils.data import Dataset
+class MyLightningDataset(Dataset):
+    """Custom dataset compatible with PyTorch Lightning."""
 
-class MyDataset(Dataset):
-    """My custom dataset."""
+    def __init__(self, label_file: Path, raw_data_path: Path, transform=None):
+        self.label_file = label_file
+        self.raw_data_path = raw_data_path
+        self.transform = transform
+        self.data = self._load_labels()
 
-    def __init__(self, raw_data_path: Path, output_folder: Path) -> None:
-        self.data_path = raw_data_path
-        self.output_folder = output_folder
-        self.data = []
-        self.df = None
+    def _load_labels(self):
+        """Load the labels and image names from the provided CSV file."""
+        df = pd.read_csv(self.label_file)
+        # Create label mappings
+        unique_labels = df['label'].unique()
+        self.label_to_index = {label: idx for idx, label in enumerate(unique_labels)}
+        self.index_to_label = {idx: label for label, idx in self.label_to_index.items()}
+        
+        # Map labels to integers
+        df['label'] = df['label'].map(self.label_to_index)
+        data = list(zip(df['image_name'], df['label']))
+        return data
 
-    def __len__(self) -> int:
-        """Return the length of the dataset."""
+    def __len__(self):
         return len(self.data)
 
-    def __getitem__(self, index: int):
-        """Return a given sample from the dataset."""
+    def __getitem__(self, index):
         image_name, label = self.data[index]
-        # Construct the full image path
-        image_path = os.path.join(self.data_path, label, image_name)
-        # Open the image and apply the transformation to tensor
-        image = Image.open(image_path)
-        image_tensor = self.transform(image)
-        return image_tensor, label
+        image_path = os.path.join(self.raw_data_path, image_name)
+        image = Image.open(image_path).convert("RGB")
+        if self.transform:
+            image = self.transform(image)
+        return image, int(label)  # Ensure label is an integer
 
-    def preprocess(self) -> None:
-        """Preprocess the raw data and save it to the output folder."""
-        print("Preprocessing data...")
-        # List all the subfolders inside the dataset folder (each folder should represent an animal)
-        class_folders = os.listdir(self.data_path)
+class AnimalDataModule(pl.LightningDataModule):
+    """DataModule for PyTorch Lightning."""
 
-        # Iterate over each class folder in the dataset (each folder corresponds to an animal type)
-        for class_label in class_folders:
-            class_folder = os.path.join(self.data_path, class_label)
+    def __init__(self, label_file: Path, raw_data_path: Path, batch_size: int = 32):
+        super().__init__()
+        self.label_file = label_file
+        self.raw_data_path = raw_data_path
+        self.batch_size = batch_size
+        self.train_transform = transforms.Compose([
+            transforms.Resize((224, 224)),
+            transforms.ToTensor(),
+        ])
 
-            # Skip non-directory files (ensure it's a folder with images)
-            if os.path.isdir(class_folder):
-                # Iterate over all images inside the class folder
-                for image_name in os.listdir(class_folder):
-                    # Check if the file is an image and not a hidden system file
-                    if image_name.lower().endswith(('.jpg', '.jpeg', '.png')) and not image_name.startswith('.'):
-                        image_path = os.path.join(class_folder, image_name)
-                        self.data.append([image_name, class_label])  # Append image name and corresponding animal class
+    def setup(self, stage=None):
+        """Load datasets for training, validation, and testing."""
+        self.dataset = MyLightningDataset(self.label_file, self.raw_data_path, transform=self.train_transform)
 
-        # Create a DataFrame from the collected data
-        self.df = pd.DataFrame(self.data, columns=['image_name', 'label'])
-
-        # Translate the 'label' column using the dictionary from translate.py
-        self.df['label'] = self.df['label'].map(translate.translate).fillna(self.df['label'])  # Use the dictionary from translate.py
-
-        # Save DataFrame to a CSV file with translated labels
-        self.df.to_csv(self.output_folder / 'translated_image_labels.csv', index=False)
-
-        print(f"CSV file saved at '{self.output_folder}/translated_image_labels.csv' with {len(self.df)} entries.")
-
-def preprocess(raw_data_path: Path, output_folder: Path) -> None:
-    """Preprocess the raw data and save it to the output folder."""
-    dataset = MyDataset(raw_data_path, output_folder)
-    dataset.preprocess()
-
-if __name__ == "__main__":
-    typer.run(preprocess)
+    def train_dataloader(self):
+        return DataLoader(self.dataset, batch_size=self.batch_size, shuffle=True)
