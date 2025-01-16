@@ -5,24 +5,67 @@ from PIL import Image
 from torch.utils.data import Dataset, DataLoader
 import pytorch_lightning as pl
 from torchvision import transforms
-import torch
-import torch.nn as nn
-import torch.optim as optim
-from torchvision.models import resnet18
+import translate
+from shutil import copy2
 import typer
 
-class MyLightningDataset(Dataset):
+class Datahandler(Dataset):
     """Custom dataset compatible with PyTorch Lightning."""
 
-    def __init__(self, label_file: Path, raw_data_path: Path, transform=None):
-        self.label_file = label_file
+    def __init__(self, processed_data_path: Path, raw_data_path: Path, transform=None):
+        self.processed_data_path = processed_data_path
         self.raw_data_path = raw_data_path
         self.transform = transform
         self.data = self._load_labels()
+        
+    def prepare_data(self):
+        print("Preprocessing data...")
+        
+        # Ensure processed_data_path is a Path object
+        processed_data_path = Path(self.processed_data_path)
+        processed_data_path.mkdir(parents=True, exist_ok=True)
+
+        # List all the subfolders inside the dataset folder (each folder should represent an animal)
+        class_folders = os.listdir(self.raw_data_path)
+
+        # Iterate over each class folder in the dataset (each folder corresponds to an animal type)
+        for class_label in class_folders:
+            class_folder = Path(self.raw_data_path) / class_label
+
+            # Skip non-directory files (ensure it's a folder with images)
+            if class_folder.is_dir():
+                # Iterate over all images inside the class folder
+                for image_name in os.listdir(class_folder):
+                    # Check if the file is an image and not a hidden system file
+                    if image_name.lower().endswith(('.jpg', '.jpeg', '.png')) and not image_name.startswith('.'):
+                        
+                        # Construct the full image path
+                        image_path = class_folder / image_name
+                        
+                        # Create a new image name by appending the label
+                        new_image_name = f"{class_label}_{image_name}"
+                        
+                        # Define the destination path
+                        dest_path = processed_data_path / new_image_name
+                        
+                        # Copy the image to the new destination with the new name
+                        copy2(image_path, dest_path)
+                        
+                        # Append the new image name and label to self.data
+                        self.data.append([new_image_name, class_label])  # Use the new image name
+
+        # Create a DataFrame from the collected data
+        self.df = pd.DataFrame(self.data, columns=['image_name', 'label'])
+
+        # Translate the 'label' column using the dictionary from translate.py
+        self.df['label'] = self.df['label'].map(translate.translate).fillna(self.df['label'])  # Use the dictionary from translate.py
+
+        # Save DataFrame to a CSV file with translated labels
+        self.df.to_csv(processed_data_path / 'translated_image_labels.csv', index=False)
 
     def _load_labels(self):
         """Load the labels and image names from the provided CSV file."""
-        df = pd.read_csv(self.label_file)
+        df = pd.read_csv(self.processed_data_path + '/translated_image_labels.csv')
         # Create label mappings
         unique_labels = df['label'].unique()
         self.label_to_index = {label: idx for idx, label in enumerate(unique_labels)}
@@ -59,7 +102,18 @@ class AnimalDataModule(pl.LightningDataModule):
 
     def setup(self, stage=None):
         """Load datasets for training, validation, and testing."""
-        self.dataset = MyLightningDataset(self.label_file, self.raw_data_path, transform=self.train_transform)
+        self.dataset = Datahandler(self.label_file, self.raw_data_path, transform=self.train_transform)
 
     def train_dataloader(self):
         return DataLoader(self.dataset, batch_size=self.batch_size, shuffle=True)
+
+def main(raw_data_path: str, processed_data_path: str):
+    """Main function to run the image preprocessing."""
+    raw_data_path = Path(raw_data_path)
+    processed_data_path = Path(processed_data_path)
+    
+    preprocessor = (raw_data_path, processed_data_path)
+    preprocessor.prepare_data()
+
+if __name__ == "__main__":
+    typer.run(main)
