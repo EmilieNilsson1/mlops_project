@@ -1,0 +1,59 @@
+import base64
+import json
+import logging
+
+#Dataachange
+
+def process_storage_event(event, context):
+    """
+    Triggered by a change to a Cloud Storage bucket.
+    Args:
+         event (dict): Event payload.
+         context (google.cloud.functions.Context): Metadata for the event.
+    """
+    # Decode the Pub/Sub message
+    pubsub_message = base64.b64decode(event['data']).decode('utf-8')
+    storage_event = json.loads(pubsub_message)
+
+    # Extract details from the event
+    bucket = storage_event.get('bucket')
+    file_name = storage_event.get('name')
+    event_type = context.event_type
+
+    # Log event details
+    logging.info(f"Event Type: {event_type}")
+    logging.info(f"Bucket: {bucket}")
+    logging.info(f"File: {file_name}")
+
+    # Example: Add custom logic (e.g., trigger a workflow, validate file, etc.)
+    if event_type == "google.storage.object.finalize":
+        logging.info(f"New or updated file detected: {file_name}")
+        # Add logic for new/updated file
+    elif event_type == "google.storage.object.delete":
+        logging.info(f"File deleted: {file_name}")
+        # Add logic for file deletion
+    else:
+        logging.info("Unhandled event type")
+
+
+
+#Model regestry
+import base64
+import json
+
+def process_registry_event(event, context):
+    # Decode Pub/Sub message
+    message_data = base64.b64decode(event['data']).decode('utf-8')
+    message = json.loads(message_data)
+
+    # Extract model details
+    model_id = message.get('modelId')
+    operation = message.get('operation')
+    print(f"Model Registry Event: Model ID = {model_id}, Operation = {operation}")
+
+    # Trigger custom workflow
+    if operation == "MODEL_UPDATED":
+        print(f"Model {model_id} updated. Starting workflow...")
+        # Add deployment or validation logic here
+
+    return "Success"
