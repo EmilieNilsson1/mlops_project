@@ -1,6 +1,6 @@
 from torch.utils.data import Dataset
 
-from image_classifier.data import MyDataset
+from src.image_classifier.data import MyDataset
 
 
 def test_my_dataset():
