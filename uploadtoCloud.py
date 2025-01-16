@@ -27,6 +27,6 @@ def upload_directory_contents(bucket_name: str, source_directory: str, destinati
 # Usage
 upload_directory_contents(
     "mlops_project25_group72", 
-    'C:/Users/nunni/OneDrive/Skrivebord/MLOps/project/mlops_project/data/processed/images', 
-    'data/processed'
+    'C:/Users/nunni/OneDrive/Skrivebord/MLOps/project/mlops_project/data/raw/cane', 
+    'data/raw/cane'
 )
