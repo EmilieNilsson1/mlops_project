@@ -46,10 +46,11 @@ class Datahandler(Dataset):
                         new_image_name = f"{class_label}_{image_name}"
                         
                         # Define the destination path
-                        dest_path = processed_data_path / new_image_name
+                        dest_path = processed_data_path / 'images' / new_image_name
                         
-                        # Copy the image to the new destination with the new name
-                        copy2(image_path, dest_path)
+                        # # Resize the image to 240x240 and save it to the new destination
+                        # self.resize_and_save_image(image_path, dest_path, (240, 240))
+                        copy2(image_path, dest_path)  # Copy the image instead of resizing
                         
                         # Append the new image name and label to self.data
                         self.data.append([new_image_name, class_label])  # Use the new image name
@@ -61,7 +62,7 @@ class Datahandler(Dataset):
         self.df['label'] = self.df['label'].map(translate.translate).fillna(self.df['label'])  # Use the dictionary from translate.py
 
         # Save DataFrame to a CSV file with translated labels
-        self.df.to_csv(processed_data_path / 'translated_image_labels.csv', index=False)
+        self.df.to_csv(processed_data_path + '/translated_image_labels.csv', index=False)
 
     def _load_labels(self):
         """Load the labels and image names from the provided CSV file."""
@@ -81,7 +82,7 @@ class Datahandler(Dataset):
 
     def __getitem__(self, index):
         image_name, label = self.data[index]
-        image_path = os.path.join(self.raw_data_path, image_name)
+        image_path = self.processed_data_path / 'images' / image_name
         image = Image.open(image_path).convert("RGB")
         if self.transform:
             image = self.transform(image)
@@ -112,8 +113,8 @@ def main(raw_data_path: str, processed_data_path: str):
     raw_data_path = Path(raw_data_path)
     processed_data_path = Path(processed_data_path)
     
-    preprocessor = (raw_data_path, processed_data_path)
-    preprocessor.prepare_data()
+    datahandler = Datahandler(processed_data_path, raw_data_path)
+    datahandler.prepare_data()
 
 if __name__ == "__main__":
     typer.run(main)
