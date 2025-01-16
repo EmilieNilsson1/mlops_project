@@ -61,20 +61,6 @@ class Datahandler(Dataset):
 
             # Save DataFrame to a CSV file with translated labels
             self.df.to_csv(processed_data_path / 'translated_image_labels.csv', index=False)
-            
-                   # Corrected path concatenation using /
-            csv_path = self.processed_data_path / 'translated_image_labels.csv'
-            df = pd.read_csv(csv_path)
-
-            # Create label mappings
-            unique_labels = df['label'].unique()
-            self.label_to_index = {label: idx for idx, label in enumerate(unique_labels)}
-            self.index_to_label = {idx: label for label, idx in self.label_to_index.items()}
-            
-            # Map labels to integers
-            df['label'] = df['label'].map(self.label_to_index)
-            # data = list(zip(df['image_name'], df['label']))
-            
 
     def _load_labels(self):
         """Load the labels and image names from the provided CSV file."""
