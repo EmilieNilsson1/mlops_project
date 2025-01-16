@@ -3,7 +3,7 @@ The overall goal of this project is to build a simple image classifier, which ca
 
 We will be working with a pretrained model and will use the PyTorch timm library.
 
-We will be using the dataset from Kagge (https://www.kaggle.com/datasets/alessiocorrado99/animals10), consisting of the 10 classes mentioned above. The dataset consists of 26k labeled images. 
+We will be using the dataset from Kaggle (https://www.kaggle.com/datasets/alessiocorrado99/animals10), consisting of the 10 classes mentioned above. The dataset consists of 26k labeled images. 
  
 We initially plan to use a pretrained ResNet18.
 
