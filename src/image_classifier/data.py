@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import pandas as pd
 from PIL import Image
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset, DataLoader, random_split
 import pytorch_lightning as pl
 from torchvision import transforms
 from image_classifier.translate import translate
@@ -86,11 +86,17 @@ class Datahandler(Dataset):
 class AnimalDataModule(pl.LightningDataModule):
     """DataModule for PyTorch Lightning."""
 
-    def __init__(self, label_file: Path, raw_data_path: Path, batch_size: int = 32):
+    def __init__(self, 
+                 label_file: Path, 
+                 raw_data_path: Path, 
+                 batch_size: int = 32, 
+                 split_ratio: list[float, float, float] = [0.8, 0.1, 0.1],
+                 seed: int = 42) -> None:
         super().__init__()
         self.label_file = label_file
         self.raw_data_path = raw_data_path
         self.batch_size = batch_size
+        self.split_ratio = split_ratio
         self.train_transform = transforms.Compose([
             transforms.Resize((224, 224)),
             transforms.ToTensor(),
@@ -99,9 +105,24 @@ class AnimalDataModule(pl.LightningDataModule):
     def setup(self, stage=None):
         """Load datasets for training, validation, and testing."""
         self.dataset = Datahandler(self.label_file, self.raw_data_path, transform=self.train_transform)
+        
+        # Calculate lengths for splits
+        total_len = len(self.dataset)
+        train_len = int(total_len * self.split_ratio[0])
+        val_len = int(total_len * self.split_ratio[1])
+        test_len = total_len - train_len - val_len  # Remaining for test
+
+        # Perform the split
+        self.train_dataset, self.val_dataset, self.test_dataset = random_split(
+            self.dataset, [train_len, val_len, test_len]
+        )
 
     def train_dataloader(self):
-        return DataLoader(self.dataset, batch_size=self.batch_size, shuffle=True)
+        return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True)
+    def val_dataloader(self):
+        return DataLoader(self.val_dataset, batch_size=self.batch_size)
+    def test_dataloader(self):
+        return DataLoader(self.test_dataset, batch_size=self.batch_size)
 
 def main(processed_data_path: str, raw_data_path: str):
     """Main function to run the image preprocessing."""

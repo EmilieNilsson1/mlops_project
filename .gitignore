@@ -7,3 +7,4 @@ outputs/
 .coverage*
 wandb/
 **/__pycache__/
+animal_classifier/
