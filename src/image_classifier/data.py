@@ -5,7 +5,7 @@ from PIL import Image
 from torch.utils.data import Dataset, DataLoader
 import pytorch_lightning as pl
 from torchvision import transforms
-import translate
+from image_classifier.translate import translate
 from shutil import copy2
 import typer
 
@@ -57,7 +57,7 @@ class Datahandler(Dataset):
             self.df = pd.DataFrame(data, columns=['image_name', 'label'])
 
             # Translate the 'label' column using the dictionary from translate.py
-            self.df['label'] = self.df['label'].map(translate.translate).fillna(self.df['label'])
+            self.df['label'] = self.df['label'].map(translate).fillna(self.df['label'])
 
             # Save DataFrame to a CSV file with translated labels
             self.df.to_csv(processed_data_path / 'translated_image_labels.csv', index=False)
