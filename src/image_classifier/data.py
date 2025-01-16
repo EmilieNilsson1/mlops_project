@@ -15,6 +15,7 @@ class Datahandler(Dataset):
         self.processed_data_path = processed_data_path
         self.raw_data_path = raw_data_path
         self.transform = transform
+        self.data = self._load_labels()
         
     def prepare_data(self):
         print("Preprocessing data...")
@@ -39,7 +40,7 @@ class Datahandler(Dataset):
                     if image_name.lower().endswith(('.jpg', '.jpeg', '.png')) and not image_name.startswith('.'):
                         
                         # Construct the full image path
-                        image_path = class_folder / image_name
+                        image_path = class_folder +"/"+ image_name
                         
                         # Create a new image name by appending the class label at the end
                         new_image_name = f"{class_label}_{image_name}"
@@ -60,12 +61,12 @@ class Datahandler(Dataset):
             self.df['label'] = self.df['label'].map(translate.translate).fillna(self.df['label'])
 
             # Save DataFrame to a CSV file with translated labels
-            self.df.to_csv(processed_data_path / 'translated_image_labels.csv', index=False)
+            self.df.to_csv(processed_data_path + '/translated_image_labels.csv', index=False)
 
     def _load_labels(self):
         """Load the labels and image names from the provided CSV file."""
         # Corrected path concatenation using /
-        csv_path = self.processed_data_path / 'translated_image_labels.csv'
+        csv_path = self.processed_data_path + '/translated_image_labels.csv'
         self.df = pd.read_csv(csv_path)
         
         data = list(zip(self.df['image_name'], self.df['label']))
@@ -76,11 +77,12 @@ class Datahandler(Dataset):
 
     def __getitem__(self, index):
         image_name, label = self.data[index]
-        image_path = self.processed_data_path / 'images' / image_name
+        image_path = self.processed_data_path + '/images' + "/"+ image_name
         image = Image.open(image_path).convert("RGB")
         if self.transform:
             image = self.transform(image)
         return image, int(label)
+    
 class AnimalDataModule(pl.LightningDataModule):
     """DataModule for PyTorch Lightning."""
 

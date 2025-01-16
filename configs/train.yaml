@@ -1,0 +1,5 @@
+hyperparameters:
+  batch_size: 100
+  epochs: 5
+  seed: 42
+  log_steps: 10
