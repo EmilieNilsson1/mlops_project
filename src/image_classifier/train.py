@@ -10,7 +10,6 @@ from model import ImageClassifier
 
 @hydra.main(config_path='../../configs', config_name='train')
 def main(cfg):
-    # TODO: hyperparameters from config file here
 
     model = ImageClassifier(num_classes=10)
 
@@ -23,9 +22,20 @@ def main(cfg):
     # hydra changes working dir to outpurs, getting back to the root
     cur = Path.cwd()
     parent_directory = cur.parent.parent.parent
-    
+
+    # Initializing the data module
+    data_module = AnimalDataModule(
+        str(parent_directory) + '/data/processed',
+        str(parent_directory) + '/data/processed/images',
+        batch_size=cfg.hyperparameters.batch_size,
+        split_ratio=(0.8, 0.1, 0.1),  # 80% train, 10% val, 10% test
+        seed=cfg.hyperparameters.seed
+    )
+
+    # Training the model
     trainer.fit(model, 
-                AnimalDataModule(str(parent_directory) + '/data/processed', str(parent_directory) + '/data/processed/images'))
+                data_module
+                )
 
 if __name__ == "__main__":
     main()
