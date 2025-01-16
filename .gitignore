@@ -1,2 +1,9 @@
 .env
 data/
+build/
+*.egg-info/
+.coverage
+outputs/
+.coverage*
+wandb/
+**/__pycache__/

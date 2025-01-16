@@ -5,7 +5,7 @@ from PIL import Image
 from torch.utils.data import Dataset, DataLoader
 import pytorch_lightning as pl
 from torchvision import transforms
-import translate
+from image_classifier.translate import translate
 from shutil import copy2
 import typer
 
@@ -40,7 +40,7 @@ class Datahandler(Dataset):
                     if image_name.lower().endswith(('.jpg', '.jpeg', '.png')) and not image_name.startswith('.'):
                         
                         # Construct the full image path
-                        image_path = class_folder / image_name
+                        image_path = class_folder +"/"+ image_name
                         
                         # Create a new image name by appending the class label at the end
                         new_image_name = f"{class_label}_{image_name}"
@@ -58,15 +58,15 @@ class Datahandler(Dataset):
             self.df = pd.DataFrame(data, columns=['image_name', 'label'])
 
             # Translate the 'label' column using the dictionary from translate.py
-            self.df['label'] = self.df['label'].map(translate.translate).fillna(self.df['label'])
+            self.df['label'] = self.df['label'].map(translate).fillna(self.df['label'])
 
             # Save DataFrame to a CSV file with translated labels
-            self.df.to_csv(processed_data_path / 'translated_image_labels.csv', index=False)
+            self.df.to_csv(processed_data_path + '/translated_image_labels.csv', index=False)
 
     def _load_labels(self):
         """Load the labels and image names from the provided CSV file."""
         # Corrected path concatenation using /
-        csv_path = self.processed_data_path / 'translated_image_labels.csv'
+        csv_path = self.processed_data_path + '/translated_image_labels.csv'
         self.df = pd.read_csv(csv_path)
         
         data = list(zip(self.df['image_name'], self.df['label']))
@@ -77,11 +77,12 @@ class Datahandler(Dataset):
 
     def __getitem__(self, index):
         image_name, label = self.data[index]
-        image_path = self.processed_data_path / 'images' / image_name
+        image_path = self.processed_data_path + '/images' + "/"+ image_name
         image = Image.open(image_path).convert("RGB")
         if self.transform:
             image = self.transform(image)
         return image, int(label)
+    
 class AnimalDataModule(pl.LightningDataModule):
     """DataModule for PyTorch Lightning."""
 
