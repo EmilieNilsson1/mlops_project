@@ -11,7 +11,6 @@ import typer
 
 class Datahandler(Dataset):
     """Custom dataset compatible with PyTorch Lightning."""
-
     def __init__(self, processed_data_path: Path, raw_data_path: Path, transform=None):
         self.processed_data_path = processed_data_path
         self.raw_data_path = raw_data_path
@@ -20,10 +19,11 @@ class Datahandler(Dataset):
         
     def prepare_data(self):
         print("Preprocessing data...")
-        
-        # Ensure processed_data_path is a Path object
+        data = []
+        # Ensure processed_data_path is a Path object and 'images' subdirectory exists
         processed_data_path = Path(self.processed_data_path)
-        processed_data_path.mkdir(parents=True, exist_ok=True)
+        images_path = processed_data_path / 'images'
+        images_path.mkdir(parents=True, exist_ok=True)
 
         # List all the subfolders inside the dataset folder (each folder should represent an animal)
         class_folders = os.listdir(self.raw_data_path)
@@ -40,40 +40,36 @@ class Datahandler(Dataset):
                     if image_name.lower().endswith(('.jpg', '.jpeg', '.png')) and not image_name.startswith('.'):
                         
                         # Construct the full image path
-                        image_path = class_folder / image_name
+                        image_path = class_folder +"/"+ image_name
                         
-                        # Create a new image name by appending the label
+                        # Create a new image name by appending the class label at the end
                         new_image_name = f"{class_label}_{image_name}"
                         
                         # Define the destination path
-                        dest_path = processed_data_path / new_image_name
+                        dest_path = images_path / new_image_name
                         
-                        # Copy the image to the new destination with the new name
+                        # Copy the image to the new destination
                         copy2(image_path, dest_path)
                         
-                        # Append the new image name and label to self.data
-                        self.data.append([new_image_name, class_label])  # Use the new image name
+                        # Append the new image name and class label (folder name) to self.data
+                        data.append([new_image_name, class_label])
 
-        # Create a DataFrame from the collected data
-        self.df = pd.DataFrame(self.data, columns=['image_name', 'label'])
+            # Create a DataFrame from the collected data
+            self.df = pd.DataFrame(data, columns=['image_name', 'label'])
 
-        # Translate the 'label' column using the dictionary from translate.py
-        self.df['label'] = self.df['label'].map(translate.translate).fillna(self.df['label'])  # Use the dictionary from translate.py
+            # Translate the 'label' column using the dictionary from translate.py
+            self.df['label'] = self.df['label'].map(translate.translate).fillna(self.df['label'])
 
-        # Save DataFrame to a CSV file with translated labels
-        self.df.to_csv(processed_data_path / 'translated_image_labels.csv', index=False)
+            # Save DataFrame to a CSV file with translated labels
+            self.df.to_csv(processed_data_path + '/translated_image_labels.csv', index=False)
 
     def _load_labels(self):
         """Load the labels and image names from the provided CSV file."""
-        df = pd.read_csv(self.processed_data_path + '/translated_image_labels.csv')
-        # Create label mappings
-        unique_labels = df['label'].unique()
-        self.label_to_index = {label: idx for idx, label in enumerate(unique_labels)}
-        self.index_to_label = {idx: label for label, idx in self.label_to_index.items()}
+        # Corrected path concatenation using /
+        csv_path = self.processed_data_path + '/translated_image_labels.csv'
+        self.df = pd.read_csv(csv_path)
         
-        # Map labels to integers
-        df['label'] = df['label'].map(self.label_to_index)
-        data = list(zip(df['image_name'], df['label']))
+        data = list(zip(self.df['image_name'], self.df['label']))
         return data
 
     def __len__(self):
@@ -81,12 +77,12 @@ class Datahandler(Dataset):
 
     def __getitem__(self, index):
         image_name, label = self.data[index]
-        image_path = os.path.join(self.raw_data_path, image_name)
+        image_path = self.processed_data_path + '/images' + "/"+ image_name
         image = Image.open(image_path).convert("RGB")
         if self.transform:
             image = self.transform(image)
-        return image, int(label)  # Ensure label is an integer
-
+        return image, int(label)
+    
 class AnimalDataModule(pl.LightningDataModule):
     """DataModule for PyTorch Lightning."""
 
@@ -107,13 +103,13 @@ class AnimalDataModule(pl.LightningDataModule):
     def train_dataloader(self):
         return DataLoader(self.dataset, batch_size=self.batch_size, shuffle=True)
 
-def main(raw_data_path: str, processed_data_path: str):
+def main(processed_data_path: str, raw_data_path: str):
     """Main function to run the image preprocessing."""
     raw_data_path = Path(raw_data_path)
     processed_data_path = Path(processed_data_path)
     
-    preprocessor = (raw_data_path, processed_data_path)
-    preprocessor.prepare_data()
+    datahandler = Datahandler(processed_data_path, raw_data_path)
+    datahandler.prepare_data()
 
 if __name__ == "__main__":
     typer.run(main)
