@@ -6,7 +6,7 @@ from pathlib import Path
 from PIL import Image
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from image_classifier.data import Datahandler, AnimalDataModule
+from src.image_classifier.data import Datahandler, AnimalDataModule
 
 
 # Helper function to create mock image data
