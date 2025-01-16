@@ -1,13 +1,12 @@
 import os
 import pytest
-import pandas as pd
 import torch
+import pandas as pd
 from pathlib import Path
 from PIL import Image
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from src.image_classifier.data import Datahandler, AnimalDataModule
-
+from src.image_classifier.data import Datahandler, AnimalDataModule  
 
 # Helper function to create mock image data
 def create_mock_data(raw_data_path, class_folders, image_count=3):
@@ -21,11 +20,11 @@ def create_mock_data(raw_data_path, class_folders, image_count=3):
 
 @pytest.fixture
 def setup_data(tmp_path):
-    raw_data_path = tmp_path / "raw_data"
-    processed_data_path = tmp_path / "processed_data"
+    raw_data_path = tmp_path / "raw"
+    processed_data_path = tmp_path / "processed"
 
     # Create mock class folders and images
-    class_folders = ["cat", "dog", "bird"]
+    class_folders = ["cat", "dog", "chicken"]
     create_mock_data(raw_data_path, class_folders)
 
     return raw_data_path, processed_data_path
@@ -48,7 +47,7 @@ def test_prepare_data(setup_data):
     # Validate contents of the CSV
     df = pd.read_csv(csv_path)
     assert len(df) == 9
-    assert set(df["label"]) == {"cat", "dog", "chicken"}
+    assert set(df["label"]) == {"cat", "dog", "chicken"}  # Assuming no translation errors
 
 def test_dataset_loading(setup_data):
     raw_data_path, processed_data_path = setup_data

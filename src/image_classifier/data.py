@@ -5,7 +5,7 @@ from PIL import Image
 from torch.utils.data import Dataset, DataLoader
 import pytorch_lightning as pl
 from torchvision import transforms
-from image_classifier.translate import translate
+from src.image_classifier.translate import translate
 from shutil import copy2
 import typer
 
