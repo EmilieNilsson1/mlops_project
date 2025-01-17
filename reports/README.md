@@ -143,7 +143,7 @@ s204204, s204259, s224235, s224227, s224205
 >
 > Answer:
 
---- question 3 fill here ---
+We used the third-party framework 'TIMM' in our project. We used the functionality of the package to load pretrained models and to train our models. The package helped us to quickly load and train models, which saved us time on training and allowed us to focus on other parts of the project.
 
 ## Coding environment
 
@@ -163,7 +163,9 @@ s204204, s204259, s224235, s224227, s224205
 >
 > Answer:
 
---- question 4 fill here ---
+We used a `requirements.txt` file to manage our dependencies. The file was auto-generated using `pip freeze > requirements.txt`. To get a complete copy of our development environment, one would have to run the following commands:
+
+conda create --<env_name> --file requirements.txt
 
 ### Question 5
 
@@ -179,7 +181,10 @@ s204204, s204259, s224235, s224227, s224205
 >
 > Answer:
 
---- question 5 fill here ---
+from the cookiecutter template we have filled out the `configs`, `src`, `data`, `models`, `reports`, `tests`, and  `dockerfiles` folders. We have removed the `notebooks` and `docs` folders because we did not use any notebooks and did not write any documentation in our project. We have added an `outputs` folder that contains the logs for our experiments. 
+###############
+se på lightning log om den skal være der
+###############
 
 ### Question 6
 
@@ -243,7 +248,7 @@ s204204, s204259, s224235, s224227, s224205
 >
 > Answer:
 
---- question 9 fill here ---
+We made use of both branches and PRs in our project. In our group, each feature was developed on a separate branch. When the feature was completed, a PR was created to merge the feature branch into the main branch. This allowed us to work on different features simultaneously without interfering with each other's work.
 
 ### Question 10
 
@@ -294,7 +299,9 @@ s204204, s204259, s224235, s224227, s224205
 >
 > Answer:
 
---- question 12 fill here ---
+We used Hydra to configure our experiments. We created a single config file that contained all the hyperparameters for our experiments. To run an experiment, we would use the following command:
+
+python my_script.py -m <model_name> -c <config_file>
 
 ### Question 13
 
@@ -309,7 +316,7 @@ s204204, s204259, s224235, s224227, s224205
 >
 > Answer:
 
---- question 13 fill here ---
+We made use of hydras config files to secure that no information is lost when running experiments and that our experiments are reproducible. Whenever an experiment is run, the config file is saved in the outputs folder. To reproduce an experiment, one would have to run the same command with the same config file.
 
 ### Question 14
 
@@ -373,7 +380,7 @@ s204204, s204259, s224235, s224227, s224205
 >
 > Answer:
 
---- question 17 fill here ---
+We made use of the following GCP services in our project: Engine, Bucket, Artifact Registry, and Build. Engine is used for running virtual machines in the cloud. Bucket is used for storing data in the cloud. Artifact Registry is used for storing docker images in the cloud. Build is used for building docker images in the cloud.
 
 ### Question 18
 
@@ -388,7 +395,7 @@ s204204, s204259, s224235, s224227, s224205
 >
 > Answer:
 
---- question 18 fill here ---
+we used the compute engine to run our training jobs. We used instances with the following hardware: _________ and we started the instances using a custom container: _________.
 
 ### Question 19
 
