@@ -10,7 +10,7 @@ app = FastAPI()
 
 # Load the model from the checkpoint
 parent_directory = Path.cwd()
-checkpoint_path = str(parent_directory) + '/outputs/2025-01-17/12-32-13/models/epoch=0-step=328.ckpt' # best-checkpoint
+checkpoint_path = str(parent_directory) + '/outputs/2025-01-17/12-32-13/models/best-checkpoint.ckpt' 
 model = ImageClassifier(num_classes=10)
 checkpoint = torch.load(checkpoint_path)
 model.load_state_dict(checkpoint['state_dict'])
@@ -46,5 +46,5 @@ def read_root():
 # Access the API: http://127.0.0.1:8000
 
 # predict picture with curl in new terminal:
-#curl -X POST "http://127.0.0.1:8000/predict/" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "file=@/path/to/image.jpg"
+# curl -X POST "http://127.0.0.1:8000/predict/" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "file=@/path/to/image.jpg"
 
