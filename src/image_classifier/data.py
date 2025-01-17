@@ -93,7 +93,7 @@ class AnimalDataModule(pl.LightningDataModule):
                  label_file: Path,
                  raw_data_path: Path,
                  batch_size: int = 32,
-                 split_ratio: list[float, float, float] = [0.8, 0.1, 0.1],
+                 split_ratio: list[float] = [0.8, 0.1, 0.1],
                  seed: int = 42) -> None:
         super().__init__()
         self.label_file = label_file
@@ -105,7 +105,7 @@ class AnimalDataModule(pl.LightningDataModule):
             transforms.ToTensor(),
         ])
 
-    def setup(self, stage=None):
+    def setup(self, stage=None) -> None:
         """Load datasets for training, validation, and testing."""
         self.dataset = Datahandler(self.label_file, self.raw_data_path, transform=self.train_transform)
 
@@ -120,14 +120,14 @@ class AnimalDataModule(pl.LightningDataModule):
             self.dataset, [train_len, val_len, test_len]
         )
 
-    def train_dataloader(self):
+    def train_dataloader(self) -> DataLoader:
         return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True)
-    def val_dataloader(self):
+    def val_dataloader(self) -> DataLoader:
         return DataLoader(self.val_dataset, batch_size=self.batch_size)
-    def test_dataloader(self):
+    def test_dataloader(self) -> DataLoader:
         return DataLoader(self.test_dataset, batch_size=self.batch_size)
 
-def main(processed_data_path: str, raw_data_path: str):
+def main(processed_data_path: str, raw_data_path: str) -> None:
     """Main function to run the image preprocessing."""
     raw_data_path = Path(raw_data_path)
     processed_data_path = Path(processed_data_path)

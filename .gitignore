@@ -8,3 +8,4 @@ outputs/
 wandb/
 **/__pycache__/
 animal_classifier/
+lightning_logs/
