@@ -13,6 +13,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Run registry update script
+    - name: Run registry update script # TODO, Replace command with command for updating model registry
       run: |
         python scripts/update_registry.py

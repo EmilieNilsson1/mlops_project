@@ -2,6 +2,8 @@ name: Trigger on Data Change
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'path/to/data/**'
 
@@ -13,6 +15,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Run your script
+    - name: Run your script # TODO, Replace command with command for training agent train.py
       run: |
         python scripts/process_data.py
