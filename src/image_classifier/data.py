@@ -15,7 +15,8 @@ class Datahandler(Dataset):
         self.processed_data_path = processed_data_path
         self.raw_data_path = raw_data_path
         self.transform = transform
-        self.data = self._load_labels()
+        if os.path.exists(self.processed_data_path / 'translated_image_labels.csv'):
+            self.data = self._load_labels()
         
     def prepare_data(self):
         print("Preprocessing data...")
