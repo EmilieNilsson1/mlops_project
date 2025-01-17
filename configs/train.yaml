@@ -3,3 +3,4 @@ hyperparameters:
   epochs: 5
   seed: 42
   log_steps: 10
+  lr: 0.001

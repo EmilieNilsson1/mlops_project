@@ -5,13 +5,14 @@ import wandb
 import hydra
 from pathlib import Path
 
-from data import AnimalDataModule
-from model import ImageClassifier
+from image_classifier.data import AnimalDataModule
+from image_classifier.model import ImageClassifier
+
 
 @hydra.main(config_path='../../configs', config_name='train')
-def main(cfg):
+def main(cfg) -> None:
 
-    model = ImageClassifier(num_classes=10)
+    model = ImageClassifier(num_classes=10, lr=cfg.hyperparameters.lr)
 
     trainer = pl.Trainer(
                         max_epochs=cfg.hyperparameters.epochs,
@@ -25,15 +26,15 @@ def main(cfg):
 
     # Initializing the data module
     data_module = AnimalDataModule(
-        str(parent_directory) + '/data/processed',
-        str(parent_directory) + '/data/processed/images',
+        Path(str(parent_directory) + '/data/processed'),
+        Path(str(parent_directory) + '/data/processed/images'),
         batch_size=cfg.hyperparameters.batch_size,
         split_ratio=(0.8, 0.1, 0.1),  # 80% train, 10% val, 10% test
         seed=cfg.hyperparameters.seed
     )
 
     # Training the model
-    trainer.fit(model, 
+    trainer.fit(model,
                 data_module
                 )
 
