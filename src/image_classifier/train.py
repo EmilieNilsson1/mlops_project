@@ -10,7 +10,7 @@ from image_classifier.data import AnimalDataModule
 from image_classifier.model import ImageClassifier
 
 
-@hydra.main(config_path='../../configs', config_name='train')
+@hydra.main(config_path='../../configs/train.yaml', config_name='train')
 def main(cfg) -> None:
 
     model = ImageClassifier(num_classes=10, lr=cfg.hyperparameters.lr)
