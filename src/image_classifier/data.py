@@ -9,7 +9,7 @@ from torchvision import transforms
 from shutil import copy2
 import typer
 
-from src.image_classifier.translate import translate
+from image_classifier.translate import translate
 
 class Datahandler(Dataset):
     """Custom dataset compatible with PyTorch Lightning."""
