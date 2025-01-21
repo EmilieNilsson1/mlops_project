@@ -8,6 +8,7 @@ RUN apt update && \
 ENV HYDRA_FULL_ERROR=1
 
 COPY src src/
+COPY configs configs/
 COPY requirements.txt requirements.txt
 COPY requirements_dev.txt requirements_dev.txt
 COPY README.md README.md
