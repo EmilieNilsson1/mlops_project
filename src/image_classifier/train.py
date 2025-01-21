@@ -13,9 +13,11 @@ from image_classifier.model import ImageClassifier
 def main(cfg) -> None:
     model = ImageClassifier(num_classes=10, lr=cfg.hyperparameters.lr)
 
+    # hydra changes working dir to outpurs, getting back to the root
     cur = Path.cwd()
     parent_directory = cur.parent.parent.parent
 
+    checkpoint_callback = ModelCheckpoint(dirpath="./models", monitor="val_loss", mode="min")
     checkpoint_callback = ModelCheckpoint(dirpath="./models", monitor="val_loss", mode="min")
 
     trainer = pl.Trainer(
@@ -23,12 +25,16 @@ def main(cfg) -> None:
         max_epochs=cfg.hyperparameters.epochs,
         log_every_n_steps=cfg.hyperparameters.log_steps,
         logger=pl.loggers.WandbLogger(project=os.getenv("WANDB_PROJECT"), entity=os.getenv("WANDB_ENTITY")),
+        callbacks=[checkpoint_callback],
+        max_epochs=cfg.hyperparameters.epochs,
+        log_every_n_steps=cfg.hyperparameters.log_steps,
+        logger=pl.loggers.WandbLogger(project=os.getenv("WANDB_PROJECT"), entity=os.getenv("WANDB_ENTITY")),
     )
-
-    # hydra changes working dir to outpurs, getting back to the root
 
     # Initializing the data module
     data_module = AnimalDataModule(
+        Path(str(parent_directory) + "/data/processed"),
+        Path(str(parent_directory) + "/data/processed/images"),
         Path(str(parent_directory) + "/data/processed"),
         Path(str(parent_directory) + "/data/processed/images"),
         batch_size=cfg.hyperparameters.batch_size,
@@ -37,6 +43,7 @@ def main(cfg) -> None:
     )
 
     # Training the model
+    trainer.fit(model, data_module)
     trainer.fit(model, data_module)
 
 
