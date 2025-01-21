@@ -2,6 +2,7 @@
 data/
 build/
 *.egg-info/
+*.egg
 .coverage
 outputs/
 .coverage*

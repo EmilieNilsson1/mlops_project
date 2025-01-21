@@ -1,4 +1,3 @@
-import os
 import shutil
 import pytest
 import torch
@@ -6,11 +5,11 @@ import pandas as pd
 from pathlib import Path
 from PIL import Image
 from src.image_classifier.data import Datahandler, AnimalDataModule
-from unittest.mock import patch, MagicMock
 
 test_dir = Path("tests/mock_data")
 raw_data_path = test_dir / "raw"
 processed_data_path = test_dir / "processed"
+
 
 def setup_mock_environment():
     # Create mock directories and files
@@ -20,19 +19,22 @@ def setup_mock_environment():
 
     # Create mock image files
     for i in range(5):
-        Image.new('RGB', (200, 200)).save(raw_data_path / "cat" / f"cat_{i}.jpg")
-        Image.new('RGB', (200, 200)).save(raw_data_path / "dog" / f"dog_{i}.jpg")
+        Image.new("RGB", (200, 200)).save(raw_data_path / "cat" / f"cat_{i}.jpg")
+        Image.new("RGB", (200, 200)).save(raw_data_path / "dog" / f"dog_{i}.jpg")
+
 
 def teardown_mock_environment():
     # Remove mock directories and files
     if test_dir.exists():
         shutil.rmtree(test_dir)
 
+
 @pytest.fixture(scope="module", autouse=True)
 def mock_environment():
     setup_mock_environment()
     yield
     teardown_mock_environment()
+
 
 def test_datahandler_prepare_data(mock_environment):
     datahandler = Datahandler(processed_data_path, raw_data_path)
@@ -49,6 +51,7 @@ def test_datahandler_prepare_data(mock_environment):
     assert set(df["label"]) == {0, 5}  # Validate labels
     assert len(df) == 10  # 5 cat images + 5 dog images
 
+
 def test_datahandler_load_labels(mock_environment):
     # Preprocess data first
     datahandler = Datahandler(processed_data_path, raw_data_path)
@@ -60,6 +63,7 @@ def test_datahandler_load_labels(mock_environment):
     for image_name, label in data:
         assert label in [0, 5]  # Validate labels
 
+
 def test_datahandler_getitem(mock_environment):
     # Preprocess data first
     datahandler = Datahandler(processed_data_path, raw_data_path, transform=None)
@@ -69,6 +73,7 @@ def test_datahandler_getitem(mock_environment):
     image, label = datahandler[0]
     assert isinstance(image, Image.Image)  # Check that it returns an image
     assert label in [0, 5]  # Check that label is an integer
+
 
 def test_animal_data_module(mock_environment):
     # Initialize and setup AnimalDataModule
@@ -89,6 +94,7 @@ def test_animal_data_module(mock_environment):
     assert len(val_loader) == 1  # Single batch
     assert len(test_loader) == 1  # Single batch
 
+
 def test_animal_data_module_empty_split(mock_environment):
     # Initialize and setup AnimalDataModule with empty split
     data_module = AnimalDataModule(processed_data_path, raw_data_path, batch_size=2, split_ratio=[1.0, 0.0, 0.0])
@@ -99,14 +105,17 @@ def test_animal_data_module_empty_split(mock_environment):
     assert len(data_module.val_dataset) == 0  # No validation data
     assert len(data_module.test_dataset) == 0  # No test data
 
+
 def test_datahandler_with_transforms(mock_environment):
     from torchvision import transforms
 
     # Add a transform
-    transform = transforms.Compose([
-        transforms.Resize((128, 128)),
-        transforms.ToTensor(),
-    ])
+    transform = transforms.Compose(
+        [
+            transforms.Resize((128, 128)),
+            transforms.ToTensor(),
+        ]
+    )
 
     # Preprocess data with transforms
     datahandler = Datahandler(processed_data_path, raw_data_path, transform=transform)
@@ -115,6 +124,7 @@ def test_datahandler_with_transforms(mock_environment):
     image, label = datahandler[0]
     assert isinstance(image, torch.Tensor)  # Ensure the image is a tensor
     assert label in [0, 5]  # Check the label
+
 
 if __name__ == "__main__":
     pytest.main(["-v", __file__])
