@@ -4,3 +4,10 @@ workerPoolSpecs:
     replicaCount: 1
     containerSpec:
         imageUri: europe-west1-docker.pkg.dev/endless-galaxy-447815-e4/my-container/artifact-image
+        env:
+        - name: WANDB_API_KEY
+          value: $WANDB_API_KEY
+        - name: WANDB_PROJECT
+          value: $WANDB_PROJECT
+        - name: WANDB_ENTITY
+          value: $WANDB_ENTITY
