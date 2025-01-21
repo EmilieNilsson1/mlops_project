@@ -33,6 +33,8 @@ steps:
     '--config',
     '${_VERTEX_TRAIN_CONFIG}',
   ]
+images:
+- 'gcr.io/endless-galaxy-447815-e4/my-container/artifact-image:latest'
 substitutions:
   _VERTEX_TRAIN_CONFIG: 'config.yaml'
 availableSecrets:
