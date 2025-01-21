@@ -7,7 +7,17 @@ from pathlib import Path
 
 from image_classifier.data import AnimalDataModule
 from image_classifier.model import ImageClassifier
+from google.cloud import storage
 
+def check_gcs_path_exists(gcs_path: str) -> bool:
+    """Check if a GCS path exists by trying to access the bucket and prefix."""
+    client = storage.Client()
+    bucket_name = gcs_path.split('/')[2]  # Extract bucket name from gs://bucket-name/path/to/file
+    prefix = '/'.join(gcs_path.split('/')[3:])  # Path inside the bucket
+
+    bucket = client.bucket(bucket_name)
+    blobs = list(bucket.list_blobs(prefix=prefix))
+    return len(blobs) > 0
 
 @hydra.main(config_path="../../configs", config_name="train.yaml")
 def main(cfg) -> None:
@@ -26,12 +36,24 @@ def main(cfg) -> None:
         logger=pl.loggers.WandbLogger(project=os.getenv("WANDB_PROJECT"), entity=os.getenv("WANDB_ENTITY")),
     )
     
-    if os.path.exists('/gcs/mlops_project25_group72/data/p'):
-        label_folder = '/gcs/mlops_project25_group72/data/p'
-        image_folder = '/gcs/mlops_project25_group72/data/p/images'
+    # if os.path.exists('/gcs/mlops_project25_group72'):
+    #     label_folder = 'gs://mlops_project25_group72/data/p'
+    #     image_folder = 'gs://mlops_project25_group72/data/p/images'
+    # else:
+    #     image_folder = str(parent_directory) + '/data/processed/images'
+    #     label_folder = str(parent_directory) + '/data/processed
+        # Check if the GCS path exists for label and image folders
+    label_folder_gcs = 'gs://mlops_project25_group72/data/p'
+    image_folder_gcs = 'gs://mlops_project25_group72/data/p/images'
+
+    if check_gcs_path_exists(label_folder_gcs) and check_gcs_path_exists(image_folder_gcs):
+        # Set the GCS paths as label and image folders directly
+        label_folder = label_folder_gcs
+        image_folder = image_folder_gcs
     else:
+        # Fall back to local path if GCS path doesn't exist (for local testing)
+        label_folder = str(parent_directory) + '/data/processed'
         image_folder = str(parent_directory) + '/data/processed/images'
-        label_folder = str(parent_directory) + '/data/processed
 
     # Initializing the data module
     data_module = AnimalDataModule(
