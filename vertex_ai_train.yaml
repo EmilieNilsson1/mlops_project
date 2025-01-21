@@ -8,7 +8,7 @@ steps:
       apk add --no-cache gettext
       envsubst < config.yaml > config.yaml.tmp
       mv config.yaml.tmp config.yaml
-  secretEnv: ['WANDB_API_KEY']
+  secretEnv: ['WANDB_API_KEY', 'WANDB_ENTITY', 'WANDB_PROJECT']
 
 - name: 'alpine'
   id: "Show config"
@@ -39,3 +39,7 @@ availableSecrets:
   secretManager:
   - versionName: projects/endless-galaxy-447815-e4/secrets/WANDB_API_KEY/versions/latest
     env: 'WANDB_API_KEY'
+  - versionName: projects/endless-galaxy-447815-e4/secrets/WANDB_ENTITY/versions/latest
+    env: 'WANDB_ENTITY'
+  - versionName: projects/endless-galaxy-447815-e4/secrets/WANDB_PROJECT/versions/latest
+    env: 'WANDB_PROJECT'
