@@ -1,6 +1,6 @@
 workerPoolSpecs:
     machineSpec:
-        machineType: n1-highmem-2
+        machineType: n1-highmem-8
     replicaCount: 1
     containerSpec:
         imageUri: europe-west1-docker.pkg.dev/endless-galaxy-447815-e4/my-container/artifact-image
@@ -11,4 +11,4 @@ workerPoolSpecs:
           value: $WANDB_PROJECT
         - name: WANDB_ENTITY
           value: $WANDB_ENTITY
-serviceAccount: 918145500414-compute@developer.gserviceaccount.com
+serviceAccount: m-889-228@endless-galaxy-447815-e4.iam.gserviceaccount.com
