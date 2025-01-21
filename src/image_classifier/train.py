@@ -43,8 +43,8 @@ def main(cfg) -> None:
     #     image_folder = str(parent_directory) + '/data/processed/images'
     #     label_folder = str(parent_directory) + '/data/processed
         # Check if the GCS path exists for label and image folders
-    label_folder_gcs = 'gs://mlops_project25_group72/data/p'
-    image_folder_gcs = 'gs://mlops_project25_group72/data/p/images'
+    label_folder_gcs = '/gcs/mlops_project25_group72/data/p'
+    image_folder_gcs = '/gcs/mlops_project25_group72/data/p/images'
 
     if check_gcs_path_exists(label_folder_gcs) and check_gcs_path_exists(image_folder_gcs):
         # Set the GCS paths as label and image folders directly
