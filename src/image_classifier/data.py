@@ -41,7 +41,7 @@ class Datahandler(Dataset):
             if class_folder.is_dir():
                 # Iterate over all images inside the class folder
                 for image_name in os.listdir(class_folder):
-                    # Check if the file is an image and not a hidden system file
+                    # Check the file is an image and not a hidden system file
                     if image_name.lower().endswith((".jpg", ".jpeg", ".png")) and not image_name.startswith("."):
                         # Construct the full image path
                         image_path = class_folder / image_name
