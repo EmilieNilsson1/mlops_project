@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from src.image_classifier.api import app
+from image_classifier.api import app
 from pathlib import Path
 
 client = TestClient(app)

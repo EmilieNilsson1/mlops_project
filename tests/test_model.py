@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
-from src.image_classifier.model import ImageClassifier
+from image_classifier.model import ImageClassifier
 
 # Helper function to create random data for testing
 def create_random_data(batch_size, input_size, num_classes):

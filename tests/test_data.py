@@ -5,7 +5,7 @@ import torch
 import pandas as pd
 from pathlib import Path
 from PIL import Image
-from src.image_classifier.data import Datahandler, AnimalDataModule
+from image_classifier.data import Datahandler, AnimalDataModule
 from unittest.mock import patch, MagicMock
 
 test_dir = Path("tests/mock_data")
