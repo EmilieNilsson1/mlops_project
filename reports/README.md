@@ -88,7 +88,7 @@ will check the repositories and the code to verify your answers.
 * [x] Write API tests for your application and setup continues integration for these (M24)
 * [x] Load test your application (M24)
 * [ ] Create a more specialized ML-deployment API using either ONNX or BentoML, or both (M25)
-* [ ] Create a frontend for your API (M26)
+* [x] Create a frontend for your API (M26)
 
 ### Week 3
 
@@ -180,7 +180,7 @@ conda create --<env_name> --file requirements.txt
 >
 > Answer:
 
-from the cookiecutter template we have filled out the `configs`, `src`, `data`, `models`, `reports`, `tests`, and  `dockerfiles` folders. We have removed the `notebooks` and `docs` folders because we did not use any notebooks and did not write any documentation in our project. We have added an `outputs` folder that contains the logs for our experiments.
+from the cookiecutter template we have filled out the `configs`, `src`, `data`, `models`, `reports`, `tests`, and  `dockerfiles` folders. We have removed the `notebooks` and `docs` folders because we did not use any notebooks and did not write any documentation in our project. We have added an `outputs` folder that contains the logs for our experiments. We also added a template folder for the frontend to the API.
 ###############
 se på lightning log om den skal være der
 ###############
@@ -198,7 +198,7 @@ se på lightning log om den skal være der
 >
 > Answer:
 
---- question 6 fill here ---
+We used ruff for linting and tried to follow pep8
 
 ## Version control
 

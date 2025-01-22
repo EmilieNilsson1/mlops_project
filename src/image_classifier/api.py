@@ -20,6 +20,9 @@ templates = Jinja2Templates(directory="templates")
 # Mount the static files directory
 app.mount("/data/static", StaticFiles(directory="data/static"), name="static")
 
+static_dir = 'data/static'
+os.makedirs(static_dir, exist_ok=True)
+
 # Define GCS bucket details
 bucket_name = "mlops_project25_group72"
 blob_name = "models/epoch=0-step=328.ckpt"
