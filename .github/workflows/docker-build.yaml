@@ -17,13 +17,17 @@ jobs:
       uses: docker/setup-buildx-action@v1
 
     - name: Log in to Google Container Registry
+      env:
+        GCP_SA_KEY: ${{ secrets.GCP_KEY }}
       run: |
-        echo ${{ secrets.GCP_KEY }} | docker login -u _json_key --password-stdin https://gcr.io
+        echo "${{ secrets.GCP_KEY }}" | docker login -u _json_key --password-stdin https://gcr.io
 
-    - name: Install dependencies
+    - name: Build and push Docker image
       run: |
-        pip install invoke
+        docker buildx create --name mybuilder --use
+        docker buildx build --builder mybuilder --platform linux/amd64,linux/arm64 \
+          --push -t gcr.io/my-project/my-image:latest .
 
-    - name: Build and push Docker images
+    - name: Post cleanup
       run: |
-        invoke docker_build
+        docker buildx rm mybuilder
