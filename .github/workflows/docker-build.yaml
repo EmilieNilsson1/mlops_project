@@ -21,11 +21,11 @@ jobs:
         GCP_SA_KEY: ${{ secrets.GCP_KEY }}
       run: echo "${{ secrets.GCP_KEY }}" | docker login -u _json_key --password-stdin https://gcr.io
 
-    - name: Build and push Docker image
+    - name: Build and push Docker images
       run: |
         docker buildx create --name mybuilder --use
         docker buildx build --builder mybuilder --platform linux/amd64,linux/arm64 \
-          --push -t gcr.io/my-project/my-image:latest .
+          --push -t gcr.io/endless-galaxy-447815/artifact-image:latest .
 
     - name: Post cleanup
       run: docker buildx rm mybuilder
