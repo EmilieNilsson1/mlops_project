@@ -2,9 +2,7 @@ from fastapi.testclient import TestClient
 from image_classifier.api import app
 from pathlib import Path
 from google.cloud import storage
-from google.oauth2 import service_account
 import os
-import json
 
 client = TestClient(app)
 
@@ -32,7 +30,7 @@ else:
 def test_read_root():
     response = client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"message": "Welcome to the Animal Classifier API"}
+    assert "Upload an Image for Prediction" in response.text
 
 def test_predict_image():
     if image.startswith("gs://"):
@@ -49,9 +47,10 @@ def test_predict_image():
         image_path = image
 
     with open(image_path, "rb") as image_file:
-        response = client.post("/predict/", files={"file": image_file}, headers={"accept": "application/json"})
+        response = client.post("/predict/", files={"file": image_file}, headers={"accept": "text/html"})
     assert response.status_code == 200
-    assert "predicted_class" in response.json()
+    assert "Prediction:" in response.text
+    assert "Uploaded Image:" in response.text
 
     # Clean up the temporary file if it was downloaded from GCS
     if image.startswith("gs://") and temp_image_path.exists():
