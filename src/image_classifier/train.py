@@ -27,7 +27,7 @@ def main(cfg) -> None:
     cur = Path.cwd()
     parent_directory = cur.parent.parent.parent
 
-    checkpoint_callback = ModelCheckpoint(dirpath="./models", monitor="val_loss", mode="min")
+    checkpoint_callback = ModelCheckpoint(dirpath="/gcs/mlops_project25_group72/models", monitor="val_loss", mode="min")
 
     trainer = pl.Trainer(
         callbacks=[checkpoint_callback],
