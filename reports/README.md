@@ -198,7 +198,9 @@ se på lightning log om den skal være der
 >
 > Answer:
 
-We used ruff for linting and tried to follow pep8
+We used ruff for linting and tried to follow pep8, and make some comments on the code. But other than that we did not make any specific rules.
+
+Making rules for code quality and format
 
 ## Version control
 
