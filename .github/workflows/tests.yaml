@@ -31,22 +31,12 @@ jobs:
         pip install -r requirements.txt
         pip install -r requirements_tests.txt
         pip install e .
-    - # Authenticate with GCP using the secret key
-    - name: Authenticate with GCP
+    - name: Test with pytest
       env:
-        GCP_SERVICE_ACCOUNT_KEYS: ${{ secrets.GCP_KEY }}
+        GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_KEY }}
       run: |
         echo "$GCP_SERVICE_ACCOUNT_KEYS" > gcp-key.json
         export GOOGLE_APPLICATION_CREDENTIALS=$PWD/gcp-key.json
         gcloud auth activate-service-account --key-file=gcp-key.json
         gcloud config set project endless-galaxy-447815-e4
-
-      # Run API tests
-    - name: Run API tests
-      env:
-        GOOGLE_APPLICATION_CREDENTIALS: $PWD/gcp-key.json
-      run: pytest tests/
-
-      # Clean up the credentials file
-    - name: Clean up credentials
-      run: rm -f gcp-key.json
+        pytest tests/
