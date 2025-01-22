@@ -3,7 +3,7 @@ workerPoolSpecs:
         machineType: n1-highmem-8
     replicaCount: 1
     containerSpec:
-        imageUri: europe-west1-docker.pkg.dev/endless-galaxy-447815-e4/my-container/artifact-image
+        imageUri: europe-west1-docker.pkg.dev/endless-galaxy-447815-e4/my-container/artifact-image:latest
         env:
         - name: WANDB_API_KEY
           value: $WANDB_API_KEY
