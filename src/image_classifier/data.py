@@ -11,7 +11,6 @@ import typer
 
 from image_classifier.translate import translate
 
-
 class Datahandler(Dataset):
     """Custom dataset compatible with PyTorch Lightning."""
 
