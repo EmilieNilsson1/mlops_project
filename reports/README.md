@@ -180,7 +180,7 @@ conda create --<env_name> --file requirements.txt
 >
 > Answer:
 
-from the cookiecutter template we have filled out the `configs`, `src`, `data`, `models`, `reports`, `tests`, and  `dockerfiles` folders. We have removed the `notebooks` and `docs` folders because we did not use any notebooks and did not write any documentation in our project. We have added an `outputs` folder that contains the logs for our experiments. 
+from the cookiecutter template we have filled out the `configs`, `src`, `data`, `models`, `reports`, `tests`, and  `dockerfiles` folders. We have removed the `notebooks` and `docs` folders because we did not use any notebooks and did not write any documentation in our project. We have added an `outputs` folder that contains the logs for our experiments.
 ###############
 se på lightning log om den skal være der
 ###############
