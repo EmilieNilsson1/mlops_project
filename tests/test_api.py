@@ -2,6 +2,9 @@ from fastapi.testclient import TestClient
 from image_classifier.api import app
 from pathlib import Path
 from google.cloud import storage
+from google.oauth2 import service_account
+import os
+import json
 
 client = TestClient(app)
 
