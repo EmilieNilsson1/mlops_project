@@ -40,18 +40,13 @@ jobs:
 
     - name: Authenticate with GCP
       env:
-        GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_KEY }}
+        GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.GCP_KEY }}
       run: |
-        echo "$GCP_SERVICE_ACCOUNT_KEY" > gcp-key.json
-        export GOOGLE_APPLICATION_CREDENTIALS=$PWD/gcp-key.json
-        gcloud auth activate-service-account --key-file=gcp-key.json
+        echo "Authenticating with inline credentials..."
+        gcloud auth activate-service-account --key-file=<(echo "$GOOGLE_APPLICATION_CREDENTIALS_JSON")
         gcloud config set project endless-galaxy-447815-e4
 
     - name: Test with pytest
       env:
-        GOOGLE_APPLICATION_CREDENTIALS: $PWD/gcp-key.json
+        GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.GCP_KEY }}
       run: pytest tests/
-
-    - name: Clean up credentials
-      if: always()
-      run: rm -f gcp-key.json
