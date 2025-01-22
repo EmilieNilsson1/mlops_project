@@ -2,8 +2,16 @@ from fastapi.testclient import TestClient
 from image_classifier.api import app
 from pathlib import Path
 from google.cloud import storage
+from google.oauth2 import service_account
+import os
+import json
 
 client = TestClient(app)
+
+if "GOOGLE_APPLICATION_CREDENTIALS_JSON" in os.environ:
+    credentials_json = os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"]
+    service_account.Credentials.from_service_account_info(json.loads(credentials_json))
+
 
 def check_gcs_path_exists(gcs_path: str) -> bool:
     """Check if a GCS path exists by trying to access the bucket and prefix."""
