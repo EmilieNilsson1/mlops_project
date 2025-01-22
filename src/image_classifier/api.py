@@ -17,11 +17,13 @@ import os
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
-# Mount the static files directory
-app.mount("/data/static", StaticFiles(directory="data/static"), name="static")
+#billeder skal gemmes i clouden i stedet, skal gemmes i pred som label_dato_tid
 
 static_dir = 'data/static'
 os.makedirs(static_dir, exist_ok=True)
+
+# Mount the static files directory
+app.mount("/data/static", StaticFiles(directory="data/static"), name="static")
 
 # Define GCS bucket details
 bucket_name = "mlops_project25_group72"
