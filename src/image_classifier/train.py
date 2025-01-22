@@ -35,14 +35,8 @@ def main(cfg) -> None:
         log_every_n_steps=cfg.hyperparameters.log_steps,
         logger=pl.loggers.WandbLogger(project=os.getenv("WANDB_PROJECT"), entity=os.getenv("WANDB_ENTITY")),
     )
-    
-    # if os.path.exists('/gcs/mlops_project25_group72'):
-    #     label_folder = 'gs://mlops_project25_group72/data/p'
-    #     image_folder = 'gs://mlops_project25_group72/data/p/images'
-    # else:
-    #     image_folder = str(parent_directory) + '/data/processed/images'
-    #     label_folder = str(parent_directory) + '/data/processed
-        # Check if the GCS path exists for label and image folders
+    # Check if the GCS paths exist, if not fall back to local paths
+    # Get the GCS paths for the label and image folders
     label_folder_gcs = '/gcs/mlops_project25_group72/data/p'
     image_folder_gcs = '/gcs/mlops_project25_group72/data/p/images'
 
