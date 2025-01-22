@@ -198,7 +198,7 @@ se på lightning log om den skal være der
 >
 > Answer:
 
-We used ruff for linting and tried to follow pep8
+--- question 6 fill here ---
 
 ## Version control
 

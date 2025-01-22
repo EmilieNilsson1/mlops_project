@@ -37,7 +37,7 @@ class MyUser(HttpUser):
     @task(3)
     def predict_image(self) -> None:
         if image.startswith("gs://"):
-        # Download the image from GCS to a local temporary file
+            # Download the image from GCS to a local temporary file
             storage_client = storage.Client()
             bucket_name = image.split('/')[2]
             blob_name = '/'.join(image.split('/')[3:])
@@ -50,13 +50,14 @@ class MyUser(HttpUser):
             image_path = image
 
         with open(image_path, "rb") as image_file:
-            response = self.client.post("/predict/", files={"file": image_file}, headers={"accept": "application/json"})
+            response = self.client.post("/predict/", files={"file": image_file}, headers={"accept": "text/html"})
         assert response.status_code == 200
-        assert "predicted_class" in response.json()
+        assert "Prediction:" in response.text
+        assert "Uploaded Image:" in response.text
 
         # Clean up the temporary file if it was downloaded from GCS
         if image.startswith("gs://") and temp_image_path.exists():
             temp_image_path.unlink()
 
 # Run the Locust load test: uvicorn src.image_classifier.api:app --reload
-# In another terminal: locust -f tests/test_api.py --host=http://127.0.0.1:8000
+# In another terminal: locust -f tests/loadTest.py --host=http://127.0.0.1:8000
