@@ -19,8 +19,7 @@ jobs:
     - name: Log in to Google Container Registry
       env:
         GCP_SA_KEY: ${{ secrets.GCP_KEY }}
-      run: |
-        echo "${{ secrets.GCP_KEY }}" | docker login -u _json_key --password-stdin https://gcr.io
+      run: echo "${{ secrets.GCP_KEY }}" | docker login -u _json_key --password-stdin https://gcr.io
 
     - name: Build and push Docker image
       run: |
@@ -29,5 +28,4 @@ jobs:
           --push -t gcr.io/my-project/my-image:latest .
 
     - name: Post cleanup
-      run: |
-        docker buildx rm mybuilder
+      run: docker buildx rm mybuilder
