@@ -1,4 +1,4 @@
-name: "Run tests"
+name: Run tests
 
 on:
   push:
@@ -31,7 +31,7 @@ jobs:
         pip install torch==${{ matrix.torch-version }}
         pip install -r requirements.txt
         pip install -r requirements_tests.txt
-        pip install e .
+        pip install -e .
 
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
@@ -43,10 +43,11 @@ jobs:
         GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.GCP_KEY }}
       run: |
         echo "Authenticating with inline credentials..."
-        gcloud auth activate-service-account --key-file=<(echo "$GOOGLE_APPLICATION_CREDENTIALS_JSON")
+        echo "${{ secrets.GCP_KEY }}" > gcp-key.json
+        gcloud auth activate-service-account --key-file=gcp-key.json
         gcloud config set project endless-galaxy-447815-e4
 
     - name: Test with pytest
       env:
-        GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.GCP_KEY }}
+        GOOGLE_APPLICATION_CREDENTIALS: gcp-key.json
       run: pytest tests/
