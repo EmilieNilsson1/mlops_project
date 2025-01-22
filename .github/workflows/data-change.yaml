@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'path/to/data/**'
+      - 'data/processed/translated_image_labels.csv'
 
 jobs:
   data_change_trigger:
@@ -15,6 +15,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Run your script # TODO, Replace command with command for training agent train.py
+    - name: Train agent
       run: |
-        python scripts/process_data.py
+        python src/image_classifier/train.py
