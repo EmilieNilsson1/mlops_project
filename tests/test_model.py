@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import DataLoader, TensorDataset
-from src.image_classifier.model import ImageClassifier
+from image_classifier.model import ImageClassifier
 
 
 # Helper function to create random data for testing
