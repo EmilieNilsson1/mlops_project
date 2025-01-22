@@ -5,22 +5,34 @@ import torch
 from image_classifier.model import ImageClassifier
 from image_classifier.data import AnimalDataModule
 from pathlib import Path
+from google.cloud import storage
+from io import BytesIO
 
 app = FastAPI()
 
-# Load the model from the checkpoint
-parent_directory = Path.cwd()
-checkpoint_path = (
-    str(parent_directory) + "/outputs/2025-01-17/12-32-13/models/epoch=0-step=328.ckpt"
-)  #'/outputs/models/best-checkpoint.ckpt'
+# Define GCS bucket details
+bucket_name = "mlops_project25_group72"
+blob_name = "models/epoch=0-step=328.ckpt"
+
+# Initialize GCS client
+client = storage.Client()
+
+# Fetch the blob from the bucket
+bucket = client.get_bucket(bucket_name)
+blob = bucket.blob(blob_name)
+checkpoint_data = blob.download_as_bytes()
+
+# Load the checkpoint on the desired device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+checkpoint = torch.load(BytesIO(checkpoint_data), map_location=device)
+
+# Initialize and load the model
 model = ImageClassifier(num_classes=10)
-checkpoint = torch.load(checkpoint_path)
 model.load_state_dict(checkpoint["state_dict"])
 model.eval()
 
-# Initialize the data module for preprocessing
-label_file = str(parent_directory) + "/data/processed/translated_image_labels.csv"
-raw_data_path = str(parent_directory) + "/data/processed/images"
+label_file = '/gcs/mlops_project25_group72/data/p/'
+raw_data_path = '/gcs/mlops_project25_group72/data/p/images'
 data_module = AnimalDataModule(label_file, raw_data_path)
 
 
