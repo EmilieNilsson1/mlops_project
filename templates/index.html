@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Classifier</title>
+    <script>
+        // This function shows the image immediately after it's selected
+        function previewImage(event) {
+            const file = event.target.files[0]; // Get the file from the input
+            const reader = new FileReader(); // Create a FileReader instance
+
+            reader.onload = function(e) {
+                // Once the file is read, display it in the image element
+                const imageElement = document.getElementById("uploaded-image");
+                imageElement.src = e.target.result; // Set the src to the file's data URL
+                imageElement.style.display = "block";  // Ensure the image is visible
+                document.getElementById("prediction-result").style.display = "none";  // Hide the previous prediction
+            }
+
+            // Read the selected file as a data URL
+            if (file) {
+                reader.readAsDataURL(file); 
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Upload an Image for Prediction</h1>
+
+    <!-- Form to upload the image -->
+    <form action="/predict/" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required onchange="previewImage(event)">
+        <button type="submit">Predict</button>
+    </form>
+
+    <!-- Uploaded image preview before prediction -->
+    <div>
+        <h2>Uploaded Image:</h2>
+        <img id="uploaded-image" src="" alt="Uploaded Image" style="max-width: 500px; display: none;">
+    </div>
+
+    <!-- Display the prediction only after form submission -->
+    <div id="prediction-result" style="display: {% if prediction %} block {% else %} none {% endif %};">
+        {% if prediction %}
+            <h2>Prediction: {{ prediction }}</h2>
+        {% endif %}
+    </div>
+
+    {% if image_url %}
+        <div>
+            <h2>Previously uploaded Image:</h2>
+            <img src="{{ image_url }}" alt="Uploaded Image" style="max-width: 500px;">
+        </div>
+    {% endif %}
+
+    {% if error %}
+        <h2>Error: {{ error }}</h2>
+    {% endif %}
+</body>
+</html>

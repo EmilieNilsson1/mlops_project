@@ -4,7 +4,7 @@ import torch
 import pandas as pd
 from pathlib import Path
 from PIL import Image
-from src.image_classifier.data import Datahandler, AnimalDataModule
+from image_classifier.data import Datahandler, AnimalDataModule
 
 test_dir = Path("tests/mock_data")
 raw_data_path = test_dir / "raw"

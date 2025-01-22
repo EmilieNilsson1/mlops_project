@@ -1,0 +1,20 @@
+name: Trigger on Data Change
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/processed/translated_image_labels.csv'
+
+jobs:
+  data_change_trigger:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Train agent
+      run: |
+        python src/image_classifier/train.py
