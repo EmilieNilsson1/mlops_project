@@ -45,7 +45,7 @@ jobs:
     - name: Run API tests
       env:
         GOOGLE_APPLICATION_CREDENTIALS: $PWD/gcp-key.json
-      run: pytest tests/test_api.py
+      run: pytest tests/
 
       # Clean up the credentials file
     - name: Clean up credentials
