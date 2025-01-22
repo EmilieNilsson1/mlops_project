@@ -43,7 +43,7 @@ jobs:
         GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.GCP_KEY }}
       run: |
         echo "Authenticating with inline credentials..."
-        echo "${{ secrets.GCP_KEY }}" > gcp-key.json
+        echo "${{ secrets.GCP_KEY }}" | jq '.' > gcp-key.json
         gcloud auth activate-service-account --key-file=gcp-key.json
         gcloud config set project endless-galaxy-447815-e4
 
