@@ -5,7 +5,10 @@ RUN apt update && \
     apt install --no-install-recommends -y build-essential gcc && \
     apt clean && rm -rf /var/lib/apt/lists/*
 
+ENV HYDRA_FULL_ERROR=1
+
 COPY src src/
+COPY configs configs/
 COPY requirements.txt requirements.txt
 COPY requirements_dev.txt requirements_dev.txt
 COPY README.md README.md

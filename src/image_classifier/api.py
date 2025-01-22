@@ -10,16 +10,19 @@ app = FastAPI()
 
 # Load the model from the checkpoint
 parent_directory = Path.cwd()
-checkpoint_path = str(parent_directory) + '/outputs/2025-01-17/12-32-13/models/best-checkpoint.ckpt' 
+checkpoint_path = (
+    str(parent_directory) + "/outputs/2025-01-17/12-32-13/models/epoch=0-step=328.ckpt"
+)  #'/outputs/models/best-checkpoint.ckpt'
 model = ImageClassifier(num_classes=10)
 checkpoint = torch.load(checkpoint_path)
-model.load_state_dict(checkpoint['state_dict'])
+model.load_state_dict(checkpoint["state_dict"])
 model.eval()
 
 # Initialize the data module for preprocessing
-label_file = str(parent_directory) + '/data/processed/translated_image_labels.csv'
-raw_data_path = str(parent_directory) + '/data/processed/images'
+label_file = str(parent_directory) + "/data/processed/translated_image_labels.csv"
+raw_data_path = str(parent_directory) + "/data/processed/images"
 data_module = AnimalDataModule(label_file, raw_data_path)
+
 
 @app.post("/predict/")
 async def predict(file: UploadFile = File(...)):
@@ -37,9 +40,10 @@ async def predict(file: UploadFile = File(...)):
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
+
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to the Image Classifier API"}
+    return {"message": "Welcome to the Animal Classifier API"}
 
 
 # Run the API: uvicorn src.image_classifier.api:app --reload
@@ -47,4 +51,3 @@ def read_root():
 
 # predict picture with curl in new terminal:
 # curl -X POST "http://127.0.0.1:8000/predict/" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "file=@/path/to/image.jpg"
-
