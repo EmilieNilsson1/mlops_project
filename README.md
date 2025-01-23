@@ -12,15 +12,23 @@ We initially plan to use a pretrained ResNet18.
 The directory structure of the project looks like this:
 ```txt
 ├── .github/                  # Github actions and dependabot
-│   ├── dependabot.yaml
 │   └── workflows/
+│       └── data_change.yaml
+│       └── model_registry_update.yaml
 │       └── tests.yaml
 ├── configs/                  # Configuration files
+│   └── __init__.py/
+│   └── train.yaml.py/
 ├── data/                     # Data directory
 │   ├── processed
+│       └── images
 │   └── raw
+│       └── cane
+│       └── cane
 ├── dockerfiles/              # Dockerfiles
 │   ├── api.Dockerfile
+│   └── artifact.Dockerfile
+│   └── datadrift.Dockerfile
 │   └── train.Dockerfile
 ├── docs/                     # Documentation
 │   ├── mkdocs.yml
