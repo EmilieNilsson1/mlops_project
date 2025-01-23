@@ -493,7 +493,7 @@ Then the user can access the API on http://127.0.0.1:8000 and upload an image.
 >
 > Answer:
 
---- question 25 fill here ---
+Yes we did both unittesting and load testing of the API. To do the unittesting we used pytest, testing for: . And to do the load test we used Locust to test the predict endpoint of the API by simulating users uploading images for prediction. The results of the load test is that the API is performing well with no failures and reasonable response times.
 
 ### Question 26
 
@@ -543,7 +543,7 @@ Then the user can access the API on http://127.0.0.1:8000 and upload an image.
 >
 > Answer:
 
---- question 28 fill here ---
+As also mentioned in question 23 we also made a frontend for the API, to make it easier to use. The frontend makes it possible to upload an image and get a prediction by implementing an HTML file.
 
 ### Question 29
 
