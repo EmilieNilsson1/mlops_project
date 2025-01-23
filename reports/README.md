@@ -264,7 +264,7 @@ We made use of both branches and PRs in our project. In our group, each feature 
 >
 > Answer:
 
---- question 10 fill here ---
+We did not use DVC, because it did no make sense for our project. Version control of data is beneficial in scenarios where data is frequently updated or modified.
 
 ### Question 11
 
@@ -281,7 +281,9 @@ We made use of both branches and PRs in our project. In our group, each feature 
 >
 > Answer:
 
---- question 11 fill here ---
+We run continuos integration on ubuntu latest, MacOS latest and windows latest, python 3.11 and 3.12, torch versions 2.5.1, 2.41.1, 2.3.1 and all of our unittesting. 
+
+An example of a triggered workflow can be seen here: https://github.com/EmilieNilsson1/mlops_project/actions/workflows/tests.yaml
 
 ## Running code and tracking experiments
 
@@ -527,7 +529,7 @@ Yes we did both unittesting and load testing of the API. To do the unittesting w
 >
 > Answer:
 
---- question 27 fill here ---
+We have used around 25 dollars and the training was the thing that was most expensive seeing as we did it wrong the first time and didn't save it correctly. This meant that we had to do it five times using a lot of credits.
 
 ### Question 28
 
@@ -574,7 +576,7 @@ As also mentioned in question 23 we also made a frontend for the API, to make it
 >
 > Answer:
 
---- question 30 fill here ---
+We have spent the most time trying to set things up on cloud and waiting for our model to train seeing as we also did the training multiple times. To overcome the challenges we have asked the TA's or chatgpt for help.
 
 ### Question 31
 
@@ -592,4 +594,16 @@ As also mentioned in question 23 we also made a frontend for the API, to make it
 > *We have used ChatGPT to help debug our code. Additionally, we used GitHub Copilot to help write some of our code.*
 > Answer:
 
---- question 31 fill here ---
+Student s204204 was in charge of setting the initial cookie cutter project, writting the code for the model and the training, setting up the continous integration and checking for datadrifting. 
+
+Student s204259 was in charge of the unittesting and the dataprocessing.
+
+Student s224235 was in charge of setting up the google cloud bucket, training our models on the cloud and deploying them and building docker images. 
+
+Student s224227 was in charge of wrtting the code for the dataprocessing, API and API-testing. 
+
+Student s224205 was in charge of the workflow triggers and building docker images.
+
+All members contributted to code and debug the different areas of the project.
+
+We have also udes ChatGPT and Copilot to help debug and write some of the code.
