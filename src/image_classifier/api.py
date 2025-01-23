@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from PIL import Image
 import torch
+import sys
 from image_classifier.model import ImageClassifier
 from image_classifier.data import AnimalDataModule
 from image_classifier.translate import translate
@@ -77,12 +78,13 @@ async def predict(request: Request, file: UploadFile = File(...)):
             _, predicted = torch.max(outputs, 1)
             predicted_class = predicted.item()
             translated_class = translate[predicted_class]
-
         # Save the image to GCS with the prediction number and timestamp in the name
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         gcs_image_name = f"{predicted_class}_{timestamp}.jpeg"
-        blob = bucket.blob(f"data/preds/{gcs_image_name}")
-        blob.upload_from_filename(local_image_path)
+        
+        if not "pytest" in sys.modules:
+            blob = bucket.blob(f"data/preds/{gcs_image_name}")
+            blob.upload_from_filename(local_image_path)
 
         # Generate the GCS image URL
         gcs_image_url = (
