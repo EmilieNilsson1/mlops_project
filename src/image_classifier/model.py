@@ -22,7 +22,9 @@ class ImageClassifier(pl.LightningModule):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.model(x)
 
-    def training_step(self, batch: tuple[torch.Tensor, torch.Tensor], batch_idx: int) -> torch.Tensor:
+    def training_step(
+        self, batch: tuple[torch.Tensor, torch.Tensor], batch_idx: int
+    ) -> torch.Tensor:
         im, label = batch
         pred = self(im)
         loss = self.criterion(pred, label)
@@ -31,7 +33,9 @@ class ImageClassifier(pl.LightningModule):
         self.log("train_acc", acc)
         return loss
 
-    def validation_step(self, batch: tuple[torch.Tensor, torch.Tensor], batch_idx: int) -> torch.Tensor:
+    def validation_step(
+        self, batch: tuple[torch.Tensor, torch.Tensor], batch_idx: int
+    ) -> torch.Tensor:
         im, label = batch
         pred = self(im)
         loss = self.criterion(pred, label)
@@ -40,7 +44,9 @@ class ImageClassifier(pl.LightningModule):
         self.log("val_acc", acc, on_epoch=True)
         return loss
 
-    def test_step(self, batch: tuple[torch.Tensor, torch.Tensor], batch_idx: int) -> torch.Tensor:
+    def test_step(
+        self, batch: tuple[torch.Tensor, torch.Tensor], batch_idx: int
+    ) -> torch.Tensor:
         im, label = batch
         pred = self(im)
         loss = self.criterion(pred, label)

@@ -97,7 +97,9 @@ def test_animal_data_module(mock_environment):
 
 def test_animal_data_module_empty_split(mock_environment):
     # Initialize and setup AnimalDataModule with empty split
-    data_module = AnimalDataModule(processed_data_path, raw_data_path, batch_size=2, split_ratio=[1.0, 0.0, 0.0])
+    data_module = AnimalDataModule(
+        processed_data_path, raw_data_path, batch_size=2, split_ratio=[1.0, 0.0, 0.0]
+    )
     data_module.setup()
 
     # Validate the dataset splits

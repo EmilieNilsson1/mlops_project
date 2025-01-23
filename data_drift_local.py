@@ -16,6 +16,7 @@ import os
 # Global variables to hold baseline data and model metadata
 baseline_data = None
 
+
 def preprocess_image(image_path: Path) -> dict:
     """
     Extract meaningful features from an image for drift analysis.
@@ -26,15 +27,15 @@ def preprocess_image(image_path: Path) -> dict:
     - Contrast (standard deviation of pixel intensities).
     """
     image = Image.open(image_path).convert("RGB")  # Ensure image is RGB
-    
+
     # Compute per-channel mean and standard deviation
     stat = ImageStat.Stat(image)
     mean_r, mean_g, mean_b = stat.mean
     std_r, std_g, std_b = stat.stddev
-    
+
     # Overall brightness (average of RGB means)
     brightness = np.mean([mean_r, mean_g, mean_b])
-    
+
     # Return extracted features as a dictionary
     return {
         "mean_r": mean_r,
@@ -45,6 +46,7 @@ def preprocess_image(image_path: Path) -> dict:
         "std_b": std_b,
         "brightness": brightness,
     }
+
 
 def load_baseline_data() -> pd.DataFrame:
     """
@@ -62,7 +64,7 @@ def load_baseline_data() -> pd.DataFrame:
         label = row["label"]
 
         # Fetch image from Cloud Storage
-        #image= Image.open(f"data/processed/images/{image_name}").convert("RGB")
+        # image= Image.open(f"data/processed/images/{image_name}").convert("RGB")
 
         # Preprocess the image
         image_features = preprocess_image(f"data/processed/images/{image_name}")
@@ -79,6 +81,7 @@ def load_baseline_data() -> pd.DataFrame:
     baseline_df.to_csv("baseline_data.csv", index=False)
     return baseline_df
 
+
 def run_drift_analysis(reference_data: pd.DataFrame, current_data: pd.DataFrame):
     """
     Run drift analysis and save the report.
@@ -86,8 +89,12 @@ def run_drift_analysis(reference_data: pd.DataFrame, current_data: pd.DataFrame)
     # Ensure only numeric features are passed
     numeric_columns = reference_data.select_dtypes(include=[np.number]).columns.tolist()
     report = Report(metrics=[DataDriftPreset()])  # Check drift for all numeric features
-    report.run(reference_data=reference_data[numeric_columns], current_data=current_data[numeric_columns])
+    report.run(
+        reference_data=reference_data[numeric_columns],
+        current_data=current_data[numeric_columns],
+    )
     report.save_html("drift_report.html")
+
 
 def load_latest_predictions(n: int) -> pd.DataFrame:
     """
@@ -110,20 +117,22 @@ def lifespan(app: FastAPI):
     """Prepare baseline data and class names on app startup."""
     global baseline_data
     baseline_data = load_baseline_data()
-    
+
     yield
 
     del baseline_data
 
+
 # Initialize FastAPI app
 app = FastAPI(lifespan=lifespan)
+
 
 @app.get("/report")
 async def get_report(n: int = 5):
     """Generate and return a data drift report."""
     # Load the latest predictions (assumes features and predictions are pre-extracted)
     prediction_data = load_latest_predictions(n)
-    
+
     # Run drift analysis
     run_drift_analysis(baseline_data, prediction_data)
     print(baseline_data.head())
