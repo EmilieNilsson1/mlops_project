@@ -7,11 +7,8 @@ import torch
 from image_classifier.model import ImageClassifier
 from image_classifier.data import AnimalDataModule
 from image_classifier.translate import translate
-from pathlib import Path
 from google.cloud import storage
 from io import BytesIO
-import requests
-from fastapi import Form
 import os
 
 app = FastAPI()
