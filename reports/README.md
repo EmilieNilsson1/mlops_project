@@ -337,6 +337,8 @@ We made use of hydras config files to secure that no information is lost when ru
 >
 > Answer:
 
+As seen in the first image when have tracked the loss and accuracy of the model. The loss and accuracy are important metrics to track because they inform us about how well the model is performing. The loss tells us how well the model is learning from the data and the accuracy tells us how well the model is able to make predictions.
+
 [WandB_loss](figures/wandb_loss.png)
 
 ### Question 15
