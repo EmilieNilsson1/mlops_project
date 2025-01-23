@@ -21,13 +21,15 @@ def check_gcs_path_exists(gcs_path: str) -> bool:
 
 @hydra.main(config_path="../../configs", config_name="train.yaml")
 def main(cfg) -> None:
+    # Set seed for reporducability
+    pl.seed_everything(cfg.hyperparameters.seed, workers=True)
+
     model = ImageClassifier(num_classes=10, lr=cfg.hyperparameters.lr)
 
     # hydra changes working dir to outpurs, getting back to the root
     cur = Path.cwd()
     parent_directory = cur.parent.parent.parent
 
-    #checkpoint_callback = ModelCheckpoint(dirpath="/gcs/mlops_project25_group72/models", monitor="val_loss", mode="min")
     checkpoint_callback = ModelCheckpoint(dirpath="gs://mlops_project25_group72/models", monitor="val_loss", mode="min")
 
     trainer = pl.Trainer(
