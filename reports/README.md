@@ -529,7 +529,7 @@ Yes we did both unittesting and load testing of the API. To do the unittesting w
 >
 > Answer:
 
---- question 27 fill here ---
+We have used around 25 dollars and the training was the thing that was most expensive seeing as we did it wrong the first time and didn't save it correctly. This meant that we had to do it five times using a lot of credits.
 
 ### Question 28
 
@@ -576,7 +576,7 @@ As also mentioned in question 23 we also made a frontend for the API, to make it
 >
 > Answer:
 
---- question 30 fill here ---
+We have spent the most time trying to set things up on cloud and waiting for our model to train seeing as we also did the training multiple times. To overcome the challenges we have asked the TA's or chatgpt for help.
 
 ### Question 31
 
@@ -594,4 +594,16 @@ As also mentioned in question 23 we also made a frontend for the API, to make it
 > *We have used ChatGPT to help debug our code. Additionally, we used GitHub Copilot to help write some of our code.*
 > Answer:
 
---- question 31 fill here ---
+Student s204204 was in charge of setting the initial cookie cutter project, writting the code for the model and the training, and setting up the continous integration. 
+
+Student s204259 was in charge of the unittesting and the dataprocessing.
+
+Student s224235 was in charge of setting up the google cloud bucket and training our models on the cloud and deploying them. 
+
+Student s224227 was in charge of wrtting the code for the dataprocessing, API and API-testing. 
+
+Student s224205 was in charge of the workflow triggers.
+
+All members contributted to code and debug the different areas of the project.
+
+We have also udes ChatGPT and Copilot to help debug and write some of the code.
