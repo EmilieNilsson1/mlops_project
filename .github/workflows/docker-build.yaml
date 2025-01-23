@@ -1,4 +1,4 @@
-name: Build and Push Docker Images to GCR
+name: Build and Push Docker Image to GCR
 
 on:
   push:
@@ -29,17 +29,10 @@ jobs:
     - name: Configure Docker for GCR
       run: gcloud auth configure-docker
 
-    - name: Build and push API Docker Image
+    - name: Install dependencies
       run: |
-        docker build -t gcr.io/dtumlops-project/api-image:latest -f dockerfiles/api.dockerfile .
-        docker push gcr.io/dtumlops-project/api-image:latest
+        pip install invoke
 
-    - name: Build and push Artifact Docker Image
+    - name: Build and push Docker images
       run: |
-        docker build -t gcr.io/dtumlops-project/artifact-image:latest -f dockerfiles/artifact.dockerfile .
-        docker push gcr.io/dtumlops-project/artifact-image:latest
-
-    - name: Build and push Train Docker Image
-      run: |
-        docker build -t gcr.io/dtumlops-project/train-image:latest -f dockerfiles/train.dockerfile .
-        docker push gcr.io/dtumlops-project/train-image:latest
+        invoke docker_build
