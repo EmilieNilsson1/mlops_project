@@ -84,7 +84,7 @@ will check the repositories and the code to verify your answers.
 * [x] Create a trigger workflow for automatically building your docker images (M21)
 * [X] Get your model training in GCP using either the Engine or Vertex AI (M21)
 * [x] Create a FastAPI application that can do inference using your model (M22)
-* [V] Deploy your model in GCP using either Functions or Run as the backend (M23)
+* [X] Deploy your model in GCP using either Functions or Run as the backend (M23)
 * [x] Write API tests for your application and setup continues integration for these (M24)
 * [x] Load test your application (M24)
 * [ ] Create a more specialized ML-deployment API using either ONNX or BentoML, or both (M25)
@@ -180,10 +180,8 @@ conda create --<env_name> --file requirements.txt
 >
 > Answer:
 
-From the cookiecutter template we have filled out the `configs`, `src`, `data`, `models`, `reports`, `tests`, and  `dockerfiles` folders. We have removed the `notebooks` and `docs` folders because we did not use any notebooks and did not write any documentation in our project. We have added an `outputs` folder that contains the logs for our experiments. We also added a template folder for the frontend to the API.
-###############
-se på lightning log om den skal være der
-###############
+From the cookiecutter template we have filled out the `configs`, `src`, `data`, `models`, `reports`, `tests`, and  `dockerfiles` folders. We have removed the `notebooks` and `docs` folders because we did not use any notebooks and did not write any documentation in our project. We have added an `outputs` folder that contains the logs for our experiments. We also added a `template` folder for the frontend to the API.
+
 
 ### Question 6
 
@@ -352,7 +350,12 @@ We made use of hydras config files to secure that no information is lost when ru
 >
 > Answer:
 
-We have used docker in cloud run when runing cloud engine.
+We have used docker in Cloud Run and when running Cloud Engine.
+
+We have a dockerfiles for training, one for inference api and one for data drift api. Each of these docker images download the requirements and copies the relevant files. 
+
+To eg run training in docker, one would run 
+`docker run train:latest` 
 
 Artiffact docker image: 'docker run europe-west1-docker.pkg.dev/endless-galaxy-447815-e4/my-container/artifact-image:latest' 
 
@@ -388,7 +391,7 @@ We did try profiling some of our code, and didn't change anything.
 >
 > Answer:
 
-We made use of the following GCP services in our project: Engine, Bucket, Artifact Registry, and Build. Engine is used for running virtual machines in the cloud. Bucket is used for storing data in the cloud. Artifact Registry is used for storing docker images in the cloud. Build is used for building docker images in the cloud.
+We made use of the following GCP services in our project: Engine, Bucket, Artifact Registry, Build, Run. Engine is used for running virtual machines in the cloud. Bucket is used for storing data in the cloud. Artifact Registry is used for storing docker images in the cloud. Build is used for building docker images in the cloud. Run is used for deploying apis. 
 
 ### Question 18
 
@@ -483,6 +486,8 @@ We deployed our API locally first. To run the API locally the user would call: u
 
 Then the user can access the API on http://127.0.0.1:8000 and upload an image.
 
+Afterwards we deployed it to the cloud using Cloud Run by building a docker image, the service can be used following this link https://app-918145500414.europe-west1.run.app
+
 ### Question 25
 
 > **Did you perform any unit testing and load testing of your API? If yes, explain how you did it and what results for**
@@ -548,6 +553,8 @@ We have used around 25 dollars and the training was the thing that was most expe
 
 As previously mentioned in question 23 we also made a frontend for the API, to make it easier to use. The frontend makes it possible to upload an image and get a prediction by implementing an HTML file.
 
+We also implemented data drifting. We calculated brightness, contrast, mean and std for each channel on our training data and used this as baseline. When new images are uploaded to the deployed inference API the predicted images are saved to the bucket. By calling the data drift API, we can compare the baseline metrics to the prediction images metrics. We also managed to deploy this in Cloud Run: https://drift-918145500414.europe-west1.run.app/report
+
 ### Question 29
 
 > **Include a figure that describes the overall architecture of your system and what services that you make use of.**
@@ -598,7 +605,7 @@ We have spent the most time trying to set things up on cloud and waiting for our
 > *We have used ChatGPT to help debug our code. Additionally, we used GitHub Copilot to help write some of our code.*
 > Answer:
 
-Student s204204 was in charge of setting the initial cookie cutter project, writting the code for the model and the training, setting up the continous integration and checking for datadrifting. 
+Student s204204 was in charge of setting the initial cookie cutter project, writting the code for the model and the training, setting up the continous integration and checking for datadrifting, deployment to Google Run. 
 
 Student s204259 was in charge of the unittesting and the dataprocessing.
 
@@ -610,4 +617,4 @@ Student s224205 was in charge of continous integration, the workflow triggers an
 
 All members contributted to code and debug the different areas of the project.
 
-We have also udes ChatGPT and Copilot to help debug and write some of the code.
+We have also used ChatGPT and Copilot to help debug and write some of the code.
