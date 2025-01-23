@@ -562,7 +562,7 @@ As also mentioned in question 23 we also made a frontend for the API, to make it
 >
 > Answer:
 
-![alt text](image-3.png)
+![Pipeline](figures/image-3.png)
 
 The starting point here in our pipeline is the local device of the devs which is where the code is created and training data is kept originaly. From this point we have pre-commit check on new code followed by commit and push before anything is uploaded to Github. From GitHub pytest test if the scripts are able to be run on more systems and version. The training data is uploaded to Google Cloud Storage in a bucket where it is easily accessed. The github repository is then sent to Google Cloud where a container is created from which a docker image is made and able to be pulled by the user. In the Google Cloud we then are able to use the image and the training data to train models in Ai Vertex from which the model is saved in the same bucket. This can then be run by a Google Cloud run as a api which creates a frontend able to be used by users. This api then saves the tested images in the bucket with it's prediction.
 
