@@ -60,7 +60,7 @@ will check the repositories and the code to verify your answers.
 * [x] Setup version control for your data or part of your data (M8)
 * [X] Add command line interfaces and project commands to your code where it makes sense (M9)
 * [X] Construct one or multiple docker files for your code (M10)
-* [-] Build the docker files locally and make sure they work as intended (M10)
+* [X] Build the docker files locally and make sure they work as intended (M10)
 * [x] Write one or multiple configurations files for your experiments (M11)
 * [x] Used Hydra to load the configurations and manage your hyperparameters (M11)
 * [ ] Use profiling to optimize your code (M12)
@@ -303,7 +303,9 @@ An example of a triggered workflow can be seen here: https://github.com/EmilieNi
 
 We used Hydra to configure our experiments. We created a single config file that contained all the hyperparameters for our experiments. To run an experiment, we would use the following command:
 
-python my_script.py -m <model_name> -c <config_file>
+`python src\image_classifier\train.py`
+
+
 
 ### Question 13
 
@@ -334,6 +336,8 @@ We made use of hydras config files to secure that no information is lost when ru
 > *As seen in the second image we are also tracking ... and ...*
 >
 > Answer:
+
+As seen in the first image when have tracked the loss and accuracy of the model. The loss and accuracy are important metrics to track because they inform us about how well the model is performing. The loss tells us how well the model is learning from the data and the accuracy tells us how well the model is able to make predictions.
 
 [WandB_loss](figures/wandb_loss.png)
 
