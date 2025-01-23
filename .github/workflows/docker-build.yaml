@@ -1,4 +1,4 @@
-name: Build and Push Docker Image to GCR
+name: Build and Push Docker Images to GCR
 
 on:
   push:
@@ -11,25 +11,35 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+
     steps:
-      # Step 1: Check out the repository code
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      # Step 2: Set up Google Cloud authentication
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.GCP_KEY }}
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        version: 'latest'
 
-      # Step 3: Configure Docker to use Google Artifact Registry
-      - name: Configure Docker for GCR
-        run: gcloud auth configure-docker
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_KEY }}
 
-      # Step 4: Build the Docker image
-      - name: Build Docker Image
-        run: docker build -t gcr.io/dtumlops-project/dockerimagea:latest .
+    - name: Configure Docker for GCR
+      run: gcloud auth configure-docker
 
-      # Step 5: Push the Docker image to GCR
-      - name: Push Docker Image
-        run: docker push gcr.io/dtumlops-project/dockerimagea:latest
+    - name: Build and push API Docker Image
+      run: |
+        docker build -t gcr.io/dtumlops-project/api-image:latest -f dockerfiles/api.dockerfile .
+        docker push gcr.io/dtumlops-project/api-image:latest
+
+    - name: Build and push Artifact Docker Image
+      run: |
+        docker build -t gcr.io/dtumlops-project/artifact-image:latest -f dockerfiles/artifact.dockerfile .
+        docker push gcr.io/dtumlops-project/artifact-image:latest
+
+    - name: Build and push Train Docker Image
+      run: |
+        docker build -t gcr.io/dtumlops-project/train-image:latest -f dockerfiles/train.dockerfile .
+        docker push gcr.io/dtumlops-project/train-image:latest
