@@ -1,35 +1,45 @@
-name: Docker Build and Push
+name: Build and Push Docker Images to GCR
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+    - name: Checkout code
+      uses: actions/checkout@v3
 
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
       with:
         version: 'latest'
 
-    - name: Auth with GCP
-      uses: google-github-actions/auth@v2
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v1
       with:
         credentials_json: ${{ secrets.GCP_KEY }}
 
-    - name: Install dependencies
-      run: |
-        pip install invoke
+    - name: Configure Docker for GCR
+      run: gcloud auth configure-docker
 
-    - name: Build and push Docker images
+    - name: Build and push API Docker Image
       run: |
-        invoke docker_build
+        docker build -t gcr.io/dtumlops-project/api-image:latest -f dockerfiles/api.dockerfile .
+        docker push gcr.io/dtumlops-project/api-image:latest
+
+    - name: Build and push Artifact Docker Image
+      run: |
+        docker build -t gcr.io/dtumlops-project/artifact-image:latest -f dockerfiles/artifact.dockerfile .
+        docker push gcr.io/dtumlops-project/artifact-image:latest
+
+    - name: Build and push Train Docker Image
+      run: |
+        docker build -t gcr.io/dtumlops-project/train-image:latest -f dockerfiles/train.dockerfile .
+        docker push gcr.io/dtumlops-project/train-image:latest
