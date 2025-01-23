@@ -1,13 +1,20 @@
 import os
+import sys
 
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint
 import hydra
 from pathlib import Path
+from google.cloud import storage
+import typer
+from typing_extensions import Annotated
+from typing import Optional
 
 from image_classifier.data import AnimalDataModule
 from image_classifier.model import ImageClassifier
-from google.cloud import storage
+
+
+app = typer.Typer()
 
 
 def check_gcs_path_exists(gcs_path: str) -> bool:
@@ -22,9 +29,28 @@ def check_gcs_path_exists(gcs_path: str) -> bool:
     blobs = list(bucket.list_blobs(prefix=prefix))
     return len(blobs) > 0
 
+@app.command()
+def main(env: Annotated[str, typer.Option("--run", "-o")] = "cloud"):
+    """ Wrapper funtion for train, to spedicify the running environment 
+    to run this locally :
+        python src/image_classifier/train.py --run local
+    to run on cloud:
+        python src/image_classifier/train.py OR train
+    """
+    os.environ["RUNNING_ENV"] = env
+    print(f"Running in {os.getenv('RUNNING_ENV')} mode")
+    sys.argv = [arg for arg in sys.argv if arg != "--run" and arg != "local"]
+    _train()
 
 @hydra.main(config_path="../../configs", config_name="train.yaml")
-def main(cfg) -> None:
+def _train(cfg) -> None:
+
+    env = os.getenv("RUNNING_ENV")
+    print(f"Running in {env} mode")
+
+    # Set seed for reporducability
+    pl.seed_everything(cfg.hyperparameters.seed, workers=True)
+
     model = ImageClassifier(num_classes=10, lr=cfg.hyperparameters.lr)
 
     # hydra changes working dir to outpurs, getting back to the root
@@ -49,9 +75,7 @@ def main(cfg) -> None:
     label_folder_gcs = "/gcs/mlops_project25_group72/data/p"
     image_folder_gcs = "/gcs/mlops_project25_group72/data/p/images"
 
-    if check_gcs_path_exists(label_folder_gcs) and check_gcs_path_exists(
-        image_folder_gcs
-    ):
+    if check_gcs_path_exists(label_folder_gcs) and check_gcs_path_exists(image_folder_gcs) and env == "cloud":
         # Set the GCS paths as label and image folders directly
         label_folder = label_folder_gcs
         image_folder = image_folder_gcs
@@ -74,4 +98,8 @@ def main(cfg) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    # to run this locally :
+    # python src/image_classifier/train.py --run local
+    # to run on cloud:
+    # python src/image_classifier/train.py OR train
+    app()
