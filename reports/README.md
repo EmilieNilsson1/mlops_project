@@ -96,7 +96,7 @@ will check the repositories and the code to verify your answers.
 * [X] Deploy to the cloud a drift detection API (M27)
 * [X] Instrument your API with a couple of system metrics (M28)
 * [X] Setup cloud monitoring of your instrumented application (M28)
-* [(V)] Create one or more alert systems in GCP to alert you if your app is not behaving correctly (M28)
+* [X] Create one or more alert systems in GCP to alert you if your app is not behaving correctly (M28)
 * [ ] If applicable, optimize the performance of your data loading using distributed data loading (M29)
 * [ ] If applicable, optimize the performance of your training pipeline by using distributed training (M30)
 * [ ] Play around with quantization, compilation and pruning for you trained models to increase inference speed (M31)
@@ -106,8 +106,8 @@ will check the repositories and the code to verify your answers.
 * [ ] Write some documentation for your application (M32)
 * [ ] Publish the documentation to GitHub Pages (M32)
 * [ ] Revisit your initial project description. Did the project turn out as you wanted?
-* [O] Create an architectural diagram over your MLOps pipeline
-* [O] Make sure all group members have an understanding about all parts of the project
+* [X] Create an architectural diagram over your MLOps pipeline
+* [X] Make sure all group members have an understanding about all parts of the project
 * [X] Uploaded all your code to GitHub
 
 ## Group information
@@ -280,6 +280,7 @@ We did not use DVC, because it did no make sense for our project. Version contro
 > Answer:
 
 We run continuos integration on ubuntu latest, MacOS latest and windows latest, python 3.11 and 3.12, torch versions 2.5.1, 2.41.1, 2.3.1 and all of our unittesting. 
+We also made a configuation file that sets up a CI procces which is triggered by changes in our datafile. This trigger executes the train scrips and makes sure the model is always up to data with the newest data.
 
 An example of a triggered workflow can be seen here: https://github.com/EmilieNilsson1/mlops_project/actions/workflows/tests.yaml
 
@@ -334,7 +335,7 @@ We made use of hydras config files to secure that no information is lost when ru
 >
 > Answer:
 
---- question 14 fill here ---
+[WandB_loss](figures/wandb_loss.png)
 
 ### Question 15
 
@@ -550,7 +551,7 @@ We have used around 25 dollars and the training was the thing that was most expe
 >
 > Answer:
 
-As also mentioned in question 23 we also made a frontend for the API, to make it easier to use. The frontend makes it possible to upload an image and get a prediction by implementing an HTML file.
+As previously mentioned in question 23 we also made a frontend for the API, to make it easier to use. The frontend makes it possible to upload an image and get a prediction by implementing an HTML file.
 
 We also implemented data drifting. We calculated brightness, contrast, mean and std for each channel on our training data and used this as baseline. When new images are uploaded to the deployed inference API the predicted images are saved to the bucket. By calling the data drift API, we can compare the baseline metrics to the prediction images metrics. We also managed to deploy this in Cloud Run: https://drift-918145500414.europe-west1.run.app/report
 
@@ -569,7 +570,10 @@ We also implemented data drifting. We calculated brightness, contrast, mean and 
 >
 > Answer:
 
---- question 29 fill here ---
+![Pipeline](figures/image-3.png)
+
+The starting point here in our pipeline is the local device of the devs which is where the code is created and training data is kept originaly. From this point we have pre-commit check on new code followed by commit and push before anything is uploaded to Github. From GitHub pytest test if the scripts are able to be run on more systems and version. The training data is uploaded to Google Cloud Storage in a bucket where it is easily accessed. The github repository is then sent to Google Cloud where a container is created from which a docker image is made and able to be pulled by the user. In the Google Cloud we then are able to use the image and the training data to train models in Ai Vertex from which the model is saved in the same bucket. This can then be run by a Google Cloud run as a api which creates a frontend able to be used by users. This api then saves the tested images in the bucket with it's prediction.
+
 
 ### Question 30
 
@@ -607,9 +611,9 @@ Student s204259 was in charge of the unittesting and the dataprocessing.
 
 Student s224235 was in charge of setting up the google cloud bucket, training our models on the cloud and deploying them and building docker images. 
 
-Student s224227 was in charge of wrtting the code for the dataprocessing, API and API-testing. 
+Student s224227 was in charge of wrtting the code for the dataprocessing, uploading the data to the could, writing the API and creating the API-testing. 
 
-Student s224205 was in charge of the workflow triggers and building docker images.
+Student s224205 was in charge of continous integration, the workflow triggers and building docker images.
 
 All members contributted to code and debug the different areas of the project.
 

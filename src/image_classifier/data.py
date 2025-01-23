@@ -91,7 +91,7 @@ class AnimalDataModule(pl.LightningDataModule):
         seed: int = 42,
     ) -> None:
         super().__init__()
-        torch.manual_seed(seed) # Set seed for reproducable results
+        torch.manual_seed(seed)  # Set seed for reproducable results
         self.label_file = label_file
         self.raw_data_path = raw_data_path
         self.batch_size = batch_size
