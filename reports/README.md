@@ -303,6 +303,8 @@ An example of a triggered workflow can be seen here: https://github.com/EmilieNi
 
 We used Hydra to configure our experiments. We created a single config file that contained all the hyperparameters for our experiments. To run an experiment, we would use the following command:
 
+`python src\image_classifier\train.py`
+
 
 
 ### Question 13
