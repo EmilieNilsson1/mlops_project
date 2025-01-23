@@ -27,10 +27,9 @@ jobs:
         credentials_json: ${{ secrets.GCP_KEY }}
 
     - name: Install dependencies
-      run: pip install invoke
+      run: |
+        pip install invoke
 
     - name: Build and push Docker images
-      run: invoke docker_build
-
-    - name: Post cleanup
-      run: docker buildx rm mybuilder
+      run: |
+        invoke docker_build
