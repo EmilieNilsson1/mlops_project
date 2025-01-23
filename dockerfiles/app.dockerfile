@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-EXPOSE $PORT
+ENV PORT=7000
 
 WORKDIR /app
 
@@ -16,5 +16,6 @@ RUN pip install uvicorn
 
 COPY src src/
 
+EXPOSE $PORT
 
-CMD exec uvicorn test_app:app --port $PORT --host 0.0.0.0 --workers 1 main:app
+CMD exec uvicorn src.api:app --port $PORT --host 0.0.0.0 --workers 1
