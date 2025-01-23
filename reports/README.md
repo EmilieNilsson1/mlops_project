@@ -282,6 +282,7 @@ We did not use DVC, because it did no make sense for our project. Version contro
 > Answer:
 
 We run continuos integration on ubuntu latest, MacOS latest and windows latest, python 3.11 and 3.12, torch versions 2.5.1, 2.41.1, 2.3.1 and all of our unittesting. 
+We also made a configuation file that sets up a CI procces which is triggered by changes in our datafile. This trigger executes the train scrips and makes sure the model is always up to data with the newest data.
 
 An example of a triggered workflow can be seen here: https://github.com/EmilieNilsson1/mlops_project/actions/workflows/tests.yaml
 
