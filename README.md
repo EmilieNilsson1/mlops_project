@@ -43,7 +43,6 @@ The directory structure of the project looks like this:
 │   └── source/
 │       └── index.md
 ├── models/                   # Trained models
-├── notebooks/                # Jupyter notebooks
 ├── reports/                  # Reports
 │   └── figures/
 ├── src/                      # Source code
@@ -67,6 +66,7 @@ The directory structure of the project looks like this:
 ├── .pre-commit-config.yaml
 ├── cloudbuild.yaml
 ├── config.yaml
+├── data_drift.py
 ├── LICENSE
 ├── pyproject.toml            # Python project file
 ├── README.md                 # Project README

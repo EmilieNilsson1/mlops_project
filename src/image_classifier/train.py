@@ -29,9 +29,10 @@ def check_gcs_path_exists(gcs_path: str) -> bool:
     blobs = list(bucket.list_blobs(prefix=prefix))
     return len(blobs) > 0
 
+
 @app.command()
 def main(env: Annotated[str, typer.Option("--run", "-o")] = "cloud"):
-    """ Wrapper funtion for train, to spedicify the running environment 
+    """Wrapper funtion for train, to spedicify the running environment
     to run this locally :
         python src/image_classifier/train.py --run local
     to run on cloud:
@@ -41,6 +42,7 @@ def main(env: Annotated[str, typer.Option("--run", "-o")] = "cloud"):
     print(f"Running in {os.getenv('RUNNING_ENV')} mode")
     sys.argv = [arg for arg in sys.argv if arg != "--run" and arg != "local"]
     _train()
+
 
 @hydra.main(config_path="../../configs", config_name="train.yaml")
 def _train(cfg) -> None:
@@ -75,7 +77,11 @@ def _train(cfg) -> None:
     label_folder_gcs = "/gcs/mlops_project25_group72/data/p"
     image_folder_gcs = "/gcs/mlops_project25_group72/data/p/images"
 
-    if check_gcs_path_exists(label_folder_gcs) and check_gcs_path_exists(image_folder_gcs) and env == "cloud":
+    if (
+        check_gcs_path_exists(label_folder_gcs)
+        and check_gcs_path_exists(image_folder_gcs)
+        and env == "cloud"
+    ):
         # Set the GCS paths as label and image folders directly
         label_folder = label_folder_gcs
         image_folder = image_folder_gcs
