@@ -605,7 +605,7 @@ Student s224235 was in charge of setting up the google cloud bucket, training ou
 
 Student s224227 was in charge of wrtting the code for the dataprocessing, uploading the data to the could, writing the API and creating the API-testing. 
 
-Student s224205 was in charge of the workflow triggers and building docker images.
+Student s224205 was in charge of continous integration, the workflow triggers and building docker images.
 
 All members contributted to code and debug the different areas of the project.
 
