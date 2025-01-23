@@ -336,7 +336,7 @@ We made use of hydras config files to secure that no information is lost when ru
 >
 > Answer:
 
---- question 14 fill here ---
+[WandB_loss](figures/wandb_loss.png)
 
 ### Question 15
 
