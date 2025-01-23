@@ -14,7 +14,7 @@ RUN pip install fastapi
 RUN pip install pydantic
 RUN pip install uvicorn
 
-COPY simple_fastapi_app.py simple_fastapi_app.py
+COPY api.py api.py
 
 EXPOSE $PORT
 
