@@ -78,11 +78,11 @@ async def predict(request: Request, file: UploadFile = File(...)):
             _, predicted = torch.max(outputs, 1)
             predicted_class = predicted.item()
             translated_class = translate[predicted_class]
-
+        # Save the image to GCS with the prediction number and timestamp in the name
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        gcs_image_name = f"{predicted_class}_{timestamp}.jpeg"
+        
         if not "pytest" in sys.modules:
-            # Save the image to GCS with the prediction number and timestamp in the name
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            gcs_image_name = f"{predicted_class}_{timestamp}.jpeg"
             blob = bucket.blob(f"data/preds/{gcs_image_name}")
             blob.upload_from_filename(local_image_path)
 
