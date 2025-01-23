@@ -594,15 +594,15 @@ We have spent the most time trying to set things up on cloud and waiting for our
 > *We have used ChatGPT to help debug our code. Additionally, we used GitHub Copilot to help write some of our code.*
 > Answer:
 
-Student s204204 was in charge of setting the initial cookie cutter project, writting the code for the model and the training, and setting up the continous integration. 
+Student s204204 was in charge of setting the initial cookie cutter project, writting the code for the model and the training, setting up the continous integration and checking for datadrifting. 
 
 Student s204259 was in charge of the unittesting and the dataprocessing.
 
-Student s224235 was in charge of setting up the google cloud bucket and training our models on the cloud and deploying them. 
+Student s224235 was in charge of setting up the google cloud bucket, training our models on the cloud and deploying them and building docker images. 
 
 Student s224227 was in charge of wrtting the code for the dataprocessing, API and API-testing. 
 
-Student s224205 was in charge of the workflow triggers.
+Student s224205 was in charge of the workflow triggers and building docker images.
 
 All members contributted to code and debug the different areas of the project.
 
