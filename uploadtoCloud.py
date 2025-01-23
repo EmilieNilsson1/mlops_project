@@ -2,7 +2,9 @@ from google.cloud import storage
 import os
 
 
-def upload_directory_contents(bucket_name: str, source_directory: str, destination_folder: str):
+def upload_directory_contents(
+    bucket_name: str, source_directory: str, destination_folder: str
+):
     # Initialize the storage client
     client = storage.Client("endless-galaxy-447815-e4")  # Project ID
     bucket = client.bucket(bucket_name)  # Get the target bucket
@@ -17,7 +19,9 @@ def upload_directory_contents(bucket_name: str, source_directory: str, destinati
 
             # Create the corresponding blob in the bucket, appending the destination folder to the path
             # The destination_folder specifies the desired folder structure in the bucket
-            destination_path = os.path.join(destination_folder, relative_path).replace("\\", "/")
+            destination_path = os.path.join(destination_folder, relative_path).replace(
+                "\\", "/"
+            )
 
             # Create a blob in the desired folder and upload the file
             blob = bucket.blob(destination_path)
