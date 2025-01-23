@@ -24,7 +24,15 @@ The directory structure of the project looks like this:
 │       └── images
 │   └── raw
 │       └── cane
-│       └── cane
+│       └── cavallo
+│       └── elefante
+│       └── farfalle
+│       └── gallina
+│       └── gatto
+│       └── mucca
+│       └── pecora
+│       └── ragno
+│       └── scoiattolo
 ├── dockerfiles/              # Dockerfiles
 │   ├── api.Dockerfile
 │   └── artifact.Dockerfile
@@ -39,27 +47,34 @@ The directory structure of the project looks like this:
 ├── reports/                  # Reports
 │   └── figures/
 ├── src/                      # Source code
-│   ├── project_name/
+│   ├── image_classifier/
 │   │   ├── __init__.py
 │   │   ├── api.py
 │   │   ├── data.py
 │   │   ├── evaluate.py
 │   │   ├── models.py
 │   │   ├── train.py
-│   │   └── visualize.py
+│   │   └── translate.py
+└── templates/
+│   ├── index.html
 └── tests/                    # Tests
 │   ├── __init__.py
+│   ├── loadTest.py
 │   ├── test_api.py
 │   ├── test_data.py
 │   └── test_model.py
 ├── .gitignore
 ├── .pre-commit-config.yaml
+├── cloudbuild.yaml
+├── config.yaml
 ├── LICENSE
 ├── pyproject.toml            # Python project file
 ├── README.md                 # Project README
 ├── requirements.txt          # Project requirements
 ├── requirements_dev.txt      # Development requirements
+├── requirements_tests.txt    # Test requirements
 └── tasks.py                  # Project tasks
+└── vertex_ai_train.yaml      
 ```
 
 
