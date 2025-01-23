@@ -1,5 +1,5 @@
 import os
-
+import torch
 from pathlib import Path
 import pandas as pd
 from PIL import Image
@@ -22,12 +22,14 @@ class Datahandler(Dataset):
         # Initialize self.data as an empty list by default
         self.data = []
 
+        # Check if csv file exist prior to initialization
         if os.path.exists(self.processed_data_path / "translated_image_labels.csv"):
             self.data = self._load_labels()
         else:
             print("Warning: translated_image_labels.csv not found. Prepare the data first.")
 
     def prepare_data(self):
+        """Prepare data by creating csv file with training data labels"""
         print("Preprocessing data...")
         data = []
         processed_data_path = Path(self.processed_data_path)
@@ -54,6 +56,7 @@ class Datahandler(Dataset):
         self.data = list(zip(self.df["image_name"], self.df["label"]))
 
     def _load_labels(self):
+        """Load image with given label from csv file"""
         csv_path = self.processed_data_path / "translated_image_labels.csv"
         self.df = pd.read_csv(csv_path)
         return list(zip(self.df["image_name"], self.df["label"]))
@@ -62,6 +65,7 @@ class Datahandler(Dataset):
         return len(self.data)
 
     def __getitem__(self, index):
+        """Get item from data structure"""
         image_name, label = self.data[index]
         image_path = self.processed_data_path / "images" / image_name
         image = Image.open(image_path).convert("RGB")
@@ -83,6 +87,7 @@ class AnimalDataModule(pl.LightningDataModule):
         seed: int = 42,
     ) -> None:
         super().__init__()
+        torch.manual_seed(seed) # Set seed for reproducable results
         self.label_file = label_file
         self.raw_data_path = raw_data_path
         self.batch_size = batch_size
