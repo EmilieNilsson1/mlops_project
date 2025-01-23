@@ -445,7 +445,7 @@ We used the compute engine to run our training jobs. We used instances with the 
 >
 > Answer:
 
---- question 22 fill here ---
+We managed to train our model in the cloud using Vertex AI. We did this by creating a custom container with our code and pushing it to the Artifact Registry. We then created a costum job in Vertex AI that used the custom container to train the model. The reason we choose Vertex AI was because it allowed us to easily train our model in the cloud without having to worry about setting up the infrastructure ourselves.
 
 ## Deployment
 
