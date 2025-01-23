@@ -264,7 +264,7 @@ We made use of both branches and PRs in our project. In our group, each feature 
 >
 > Answer:
 
---- question 10 fill here ---
+We did not use DVC, because it did no make sense for our project. Version control of data is beneficial in scenarios where data is frequently updated or modified.
 
 ### Question 11
 
@@ -281,7 +281,9 @@ We made use of both branches and PRs in our project. In our group, each feature 
 >
 > Answer:
 
---- question 11 fill here ---
+We run continuos integration on ubuntu latest, MacOS latest and windows latest, python 3.11 and 3.12, torch versions 2.5.1, 2.41.1, 2.3.1 and all of our unittesting. 
+
+An example of a triggered workflow can be seen here: https://github.com/EmilieNilsson1/mlops_project/actions/workflows/tests.yaml
 
 ## Running code and tracking experiments
 
