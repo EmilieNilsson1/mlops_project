@@ -511,7 +511,7 @@ Yes we did both unittesting and load testing of the API. To do the unittesting w
 >
 > Answer:
 
---- question 26 fill here ---
+We have 3 alert policies to watch if the the bucket is filled with requests and if too many files are located in the bucket. This is done to check if anyone abuses the api or likewise. We also check the burn rate of the project to see if the uptime is high enough. The monitoring here is setup so we can watch these parts of the project more closely and would hereby be able to focus on the less optimized parts.
 
 ## Overall discussion of project
 
@@ -600,7 +600,7 @@ We have spent the most time trying to set things up on cloud and waiting for our
 
 Student s204204 was in charge of setting the initial cookie cutter project, writting the code for the model and the training, setting up the continous integration and checking for datadrifting. 
 
-Student s204259 was in charge of the unittesting and the dataprocessing.
+Student s204259 was in charge of the unittesting, monitoring and the dataprocessing.
 
 Student s224235 was in charge of setting up the google cloud bucket, training our models on the cloud and deploying them and building docker images. 
 
