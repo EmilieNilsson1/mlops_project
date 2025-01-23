@@ -11,6 +11,7 @@ import typer
 
 from image_classifier.translate import translate
 
+
 class Datahandler(Dataset):
     """Custom dataset compatible with PyTorch Lightning."""
 
@@ -25,7 +26,9 @@ class Datahandler(Dataset):
         if os.path.exists(self.processed_data_path / "translated_image_labels.csv"):
             self.data = self._load_labels()
         else:
-            print("Warning: translated_image_labels.csv not found. Prepare the data first.")
+            print(
+                "Warning: translated_image_labels.csv not found. Prepare the data first."
+            )
 
     def prepare_data(self):
         print("Preprocessing data...")
@@ -39,7 +42,9 @@ class Datahandler(Dataset):
             class_folder = Path(self.raw_data_path) / class_label
             if class_folder.is_dir():
                 for image_name in os.listdir(class_folder):
-                    if image_name.lower().endswith((".jpg", ".jpeg", ".png")) and not image_name.startswith("."):
+                    if image_name.lower().endswith(
+                        (".jpg", ".jpeg", ".png")
+                    ) and not image_name.startswith("."):
                         image_path = class_folder / image_name
                         new_image_name = f"{class_label}_{image_name}"
                         dest_path = images_path / new_image_name
@@ -70,7 +75,6 @@ class Datahandler(Dataset):
         return image, int(label)
 
 
-
 class AnimalDataModule(pl.LightningDataModule):
     """DataModule for PyTorch Lightning."""
 
@@ -96,7 +100,9 @@ class AnimalDataModule(pl.LightningDataModule):
 
     def setup(self, stage=None) -> None:
         """Load datasets for training, validation, and testing."""
-        self.dataset = Datahandler(self.label_file, self.raw_data_path, transform=self.train_transform)
+        self.dataset = Datahandler(
+            self.label_file, self.raw_data_path, transform=self.train_transform
+        )
 
         # Calculate lengths for splits
         total_len = len(self.dataset)

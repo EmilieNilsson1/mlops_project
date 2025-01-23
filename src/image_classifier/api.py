@@ -43,13 +43,15 @@ model = ImageClassifier(num_classes=10)
 model.load_state_dict(checkpoint["state_dict"])
 model.eval()
 
-label_file = '/gcs/mlops_project25_group72/data/p/'
-raw_data_path = '/gcs/mlops_project25_group72/data/p/images'
+label_file = "/gcs/mlops_project25_group72/data/p/"
+raw_data_path = "/gcs/mlops_project25_group72/data/p/images"
 data_module = AnimalDataModule(label_file, raw_data_path)
+
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
 
 @app.post("/predict/", response_class=HTMLResponse)
 async def predict(request: Request, file: UploadFile = File(...)):
@@ -83,19 +85,27 @@ async def predict(request: Request, file: UploadFile = File(...)):
         blob.upload_from_filename(local_image_path)
 
         # Generate the GCS image URL
-        gcs_image_url = f"https://storage.googleapis.com/{bucket_name}/data/preds/{gcs_image_name}"
+        gcs_image_url = (
+            f"https://storage.googleapis.com/{bucket_name}/data/preds/{gcs_image_name}"
+        )
 
-        return templates.TemplateResponse("index.html", {
-            "request": request,
-            "prediction": translated_class,
-            "image_url": local_image_url,  # Pass the local image URL back to the template
-            "gcs_image_url": gcs_image_url,  # Pass the GCS image URL back to the template
-        })
+        return templates.TemplateResponse(
+            "index.html",
+            {
+                "request": request,
+                "prediction": translated_class,
+                "image_url": local_image_url,  # Pass the local image URL back to the template
+                "gcs_image_url": gcs_image_url,  # Pass the GCS image URL back to the template
+            },
+        )
     except Exception as e:
-        return templates.TemplateResponse("index.html", {
-            "request": request,
-            "error": str(e),
-        })
+        return templates.TemplateResponse(
+            "index.html",
+            {
+                "request": request,
+                "error": str(e),
+            },
+        )
 
 
 # Run the API: uvicorn src.image_classifier.api:app --reload

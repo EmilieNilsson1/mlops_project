@@ -15,6 +15,7 @@ import io
 baseline_data = None
 BUCKET_NAME = "mlops_project25_group72"
 
+
 def preprocess_image(image: Path) -> dict:
     """
     Extract meaningful features from an image for drift analysis.
@@ -29,12 +30,12 @@ def preprocess_image(image: Path) -> dict:
     stat = ImageStat.Stat(image)
     mean_r, mean_g, mean_b = stat.mean
     std_r, std_g, std_b = stat.stddev
-    
+
     # Overall brightness (average of RGB means)
     brightness = np.mean([mean_r, mean_g, mean_b])
 
     contrast = np.std(np.array(image))
-    
+
     # Return extracted features as a dictionary
     return {
         "mean_r": mean_r,
@@ -44,8 +45,9 @@ def preprocess_image(image: Path) -> dict:
         "std_g": std_g,
         "std_b": std_b,
         "brightness": brightness,
-        "contrast": contrast
+        "contrast": contrast,
     }
+
 
 def load_baseline_data() -> pd.DataFrame:
     """
@@ -88,7 +90,6 @@ def load_baseline_data() -> pd.DataFrame:
             else:
                 print(f"Warning: Image {image_name} not found in Cloud Storage")
 
-
         # Convert the list of features to a DataFrame
         baseline_df = pd.DataFrame(features)
 
@@ -99,6 +100,7 @@ def load_baseline_data() -> pd.DataFrame:
 
     return baseline_df
 
+
 def run_drift_analysis(reference_data: pd.DataFrame, current_data: pd.DataFrame):
     """
     Run drift analysis and save the report.
@@ -106,8 +108,12 @@ def run_drift_analysis(reference_data: pd.DataFrame, current_data: pd.DataFrame)
     # Ensure only numeric features are passed
     numeric_columns = reference_data.select_dtypes(include=[np.number]).columns.tolist()
     report = Report(metrics=[DataDriftPreset()])  # Check drift for all numeric features
-    report.run(reference_data=reference_data[numeric_columns], current_data=current_data[numeric_columns])
+    report.run(
+        reference_data=reference_data[numeric_columns],
+        current_data=current_data[numeric_columns],
+    )
     report.save_html("drift_report.html")
+
 
 def load_latest_predictions(directory: Path, n: int) -> pd.DataFrame:
     """
@@ -121,20 +127,20 @@ def load_latest_predictions(directory: Path, n: int) -> pd.DataFrame:
     folder_name = directory / "preds/"
     folder_name = "data/preds/"
     print(f"Loading predictions from {folder_name}")
-    #blobs = bucket.blob(folder_name)
+    # blobs = bucket.blob(folder_name)
 
     # Download files
     blobs = bucket.list_blobs(prefix=folder_name)  # List all objects in the bucket
 
     for i, blob in enumerate(blobs):
-        if blob.name.endswith(('.jpg', '.jpeg', '.png')):
+        if blob.name.endswith((".jpg", ".jpeg", ".png")):
             print(blob.name)
             image_blob = bucket.blob(f"{blob.name}")
             image_data = image_blob.download_as_bytes()
             image = Image.open(io.BytesIO(image_data)).convert("RGB")
 
             process = preprocess_image(image)
-            #process = preprocess_image(data_path / im)
+            # process = preprocess_image(data_path / im)
             process["label"] = int(blob.name.split("/")[-1].split("_")[0])
             new_data.append(process)
             if i >= n:
@@ -148,13 +154,15 @@ def lifespan(app: FastAPI):
     global baseline_data
 
     baseline_data = load_baseline_data()
-    
+
     yield
 
     del baseline_data
 
+
 # Initialize FastAPI app
 app = FastAPI(lifespan=lifespan)
+
 
 @app.get("/report")
 async def get_report(n: int = 5):
@@ -162,18 +170,19 @@ async def get_report(n: int = 5):
     # Load the latest predictions (assumes features and predictions are pre-extracted)
     dir = BUCKET_NAME + "/data"
     prediction_data = load_latest_predictions(Path(dir), n)
-    
+
     print(baseline_data.head())
     print(prediction_data.head())
 
     # Run drift analysis
     run_drift_analysis(baseline_data, prediction_data)
-    
+
     # Read the generated report
     async with await anyio.open_file("drift_report.html", encoding="utf-8") as f:
         html_content = await f.read()
 
     return HTMLResponse(content=html_content, status_code=200)
+
 
 @app.get("/")
 def read_root():

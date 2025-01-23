@@ -56,7 +56,7 @@ will check the repositories and the code to verify your answers.
 * [x] Add a model to `model.py` and a training procedure to `train.py` and get that running (M6)
 * [X] Remember to fill out the `requirements.txt` and `requirements_dev.txt` file with whatever dependencies that you are using (M2+M6)
 * [X] Remember to comply with good coding practices (`pep8`) while doing the project (M7)
-* [-] Do a bit of code typing and remember to document essential parts of your code (M7)
+* [X] Do a bit of code typing and remember to document essential parts of your code (M7)
 * [x] Setup version control for your data or part of your data (M8)
 * [X] Add command line interfaces and project commands to your code where it makes sense (M9)
 * [X] Construct one or multiple docker files for your code (M10)
@@ -180,7 +180,7 @@ conda create --<env_name> --file requirements.txt
 >
 > Answer:
 
-from the cookiecutter template we have filled out the `configs`, `src`, `data`, `models`, `reports`, `tests`, and  `dockerfiles` folders. We have removed the `notebooks` and `docs` folders because we did not use any notebooks and did not write any documentation in our project. We have added an `outputs` folder that contains the logs for our experiments. We also added a template folder for the frontend to the API.
+From the cookiecutter template we have filled out the `configs`, `src`, `data`, `models`, `reports`, `tests`, and  `dockerfiles` folders. We have removed the `notebooks` and `docs` folders because we did not use any notebooks and did not write any documentation in our project. We have added an `outputs` folder that contains the logs for our experiments. We also added a template folder for the frontend to the API.
 ###############
 se på lightning log om den skal være der
 ###############
@@ -198,7 +198,9 @@ se på lightning log om den skal være der
 >
 > Answer:
 
---- question 6 fill here ---
+We used ruff for linting and black for formatting to keep everything similar. We agreed that we should comment on the code to make it easier to read and understand.
+
+Linting and formatting ensures that the code looks the same throughout the entire project and using packages like ruff and black makes it easier to do this, because it therefore it not nessecary to think about it as much during the codingproces. Typing og documantation is important in larger projects because they make the code easier to understand and interpret and explain the flow of the code and reasoning behind it. The concepts are important in larger prrojects because it makes it easier to read and understand the code.
 
 ## Version control
 
@@ -217,7 +219,7 @@ se på lightning log om den skal være der
 >
 > Answer:
 
---- question 7 fill here ---
+We have implementet 13 pytest tests and 1 loadtest. We are testing the API, the data and the model. We are testing the most crucial parts of our application such as the datahandler, the different steps of the model, and the predictions and a loadtest of the API.
 
 ### Question 8
 
@@ -232,7 +234,7 @@ se på lightning log om den skal være der
 >
 > Answer:
 
---- question 8 fill here ---
+The total coverage is 92% with the missing coverage being lines that are basically non-testable. Even if we had a 100% coverage we would not trust the code to be error free because we test some specific things and it is almost impossible to make unittests that ensures that all possible errors are covered.
 
 ### Question 9
 
@@ -347,7 +349,9 @@ We made use of hydras config files to secure that no information is lost when ru
 >
 > Answer:
 
---- question 15 fill here ---
+We have used docker in cloud run when runing cloud engine.
+
+Artiffact docker image: 'docker run europe-west1-docker.pkg.dev/endless-galaxy-447815-e4/my-container/artifact-image:latest' 
 
 ### Question 16
 
@@ -362,7 +366,9 @@ We made use of hydras config files to secure that no information is lost when ru
 >
 > Answer:
 
---- question 16 fill here ---
+We tried finding the bug and then used chatgpt or copilot or TA's to help debug the code. We didn't use the debugger which would have been optimal.
+
+We did try profiling some of our code, and didn't change anything. 
 
 ## Working in the cloud
 
@@ -394,7 +400,7 @@ We made use of the following GCP services in our project: Engine, Bucket, Artifa
 >
 > Answer:
 
-we used the compute engine to run our training jobs. We used instances with the following hardware: _________ and we started the instances using a custom container: _________.
+We used the compute engine to run our training jobs. We used instances with the following hardware: n1-highmem-8 and we started the instances using a custom container: europe-west1-docker.pkg.dev/endless-galaxy-447815-e4/my-container/artifact-image:latest.
 
 ### Question 19
 
@@ -403,7 +409,8 @@ we used the compute engine to run our training jobs. We used instances with the 
 >
 > Answer:
 
---- question 19 fill here ---
+![Bucket](figures/image.png)
+
 
 ### Question 20
 
@@ -412,7 +419,7 @@ we used the compute engine to run our training jobs. We used instances with the 
 >
 > Answer:
 
---- question 20 fill here ---
+![Artifact registry](figures/image-1.png)
 
 ### Question 21
 
@@ -421,7 +428,7 @@ we used the compute engine to run our training jobs. We used instances with the 
 >
 > Answer:
 
---- question 21 fill here ---
+![Cloud build](figures/image-2.png)
 
 ### Question 22
 
@@ -453,7 +460,7 @@ we used the compute engine to run our training jobs. We used instances with the 
 >
 > Answer:
 
---- question 23 fill here ---
+We used FastAPI to write the API. We made an API that can take an image as input and then use our trained model to predict which animal is shown in the image. We also created frontend so it is possible to upload an image from the computer and then get the prediction.
 
 ### Question 24
 
@@ -469,7 +476,9 @@ we used the compute engine to run our training jobs. We used instances with the 
 >
 > Answer:
 
---- question 24 fill here ---
+We deployed our API locally first. To run the API locally the user would call: uvicorn src.image_classifier.api:app --reload
+
+Then the user can access the API on http://127.0.0.1:8000 and upload an image or it can be done by opening another terminal and calling the command: curl -X POST "http://127.0.0.1:8000/predict/" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "file=@/path/to/image.jpg"
 
 ### Question 25
 

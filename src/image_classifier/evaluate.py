@@ -10,7 +10,9 @@ app = typer.Typer()
 
 @app.command()
 def main(
-    ckpt: str = typer.Argument(...), label_file: Path = typer.Argument(...), data_path: str = typer.Argument(...)
+    ckpt: str = typer.Argument(...),
+    label_file: Path = typer.Argument(...),
+    data_path: str = typer.Argument(...),
 ) -> None:
     model = ImageClassifier.load_from_checkpoint(ckpt, num_classes=10)
     model.eval()

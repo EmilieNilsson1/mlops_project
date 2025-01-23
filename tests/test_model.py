@@ -27,7 +27,9 @@ def test_forward_pass():
     model = ImageClassifier(num_classes=num_classes)
 
     # Create random data with a batch size of 2 and input size of 224
-    data_loader = create_random_data(batch_size=2, input_size=224, num_classes=num_classes)
+    data_loader = create_random_data(
+        batch_size=2, input_size=224, num_classes=num_classes
+    )
     images, labels = next(iter(data_loader))  # Get a batch
 
     # Perform a forward pass
@@ -43,7 +45,9 @@ def test_training_step():
     model = ImageClassifier(num_classes=num_classes)
 
     # Create random data with a batch size of 2 and input size of 224
-    data_loader = create_random_data(batch_size=2, input_size=224, num_classes=num_classes)
+    data_loader = create_random_data(
+        batch_size=2, input_size=224, num_classes=num_classes
+    )
     images, labels = next(iter(data_loader))  # Get a batch
 
     # Mock the batch_idx argument and call the training_step method
@@ -60,7 +64,9 @@ def test_validation_step():
     model = ImageClassifier(num_classes=num_classes)
 
     # Create random data with a batch size of 2 and input size of 224
-    data_loader = create_random_data(batch_size=2, input_size=224, num_classes=num_classes)
+    data_loader = create_random_data(
+        batch_size=2, input_size=224, num_classes=num_classes
+    )
     images, labels = next(iter(data_loader))  # Get a batch
 
     # Mock the batch_idx argument and call the validation_step method
