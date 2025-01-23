@@ -106,7 +106,7 @@ will check the repositories and the code to verify your answers.
 * [ ] Write some documentation for your application (M32)
 * [ ] Publish the documentation to GitHub Pages (M32)
 * [ ] Revisit your initial project description. Did the project turn out as you wanted?
-* [O] Create an architectural diagram over your MLOps pipeline
+* [X] Create an architectural diagram over your MLOps pipeline
 * [O] Make sure all group members have an understanding about all parts of the project
 * [X] Uploaded all your code to GitHub
 
@@ -304,7 +304,7 @@ An example of a triggered workflow can be seen here: https://github.com/EmilieNi
 
 We used Hydra to configure our experiments. We created a single config file that contained all the hyperparameters for our experiments. To run an experiment, we would use the following command:
 
-python my_script.py -m <model_name> -c <config_file>
+
 
 ### Question 13
 
