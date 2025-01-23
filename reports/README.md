@@ -545,7 +545,7 @@ We have used around 25 dollars and the training was the thing that was most expe
 >
 > Answer:
 
-As also mentioned in question 23 we also made a frontend for the API, to make it easier to use. The frontend makes it possible to upload an image and get a prediction by implementing an HTML file.
+As previously mentioned in question 23 we also made a frontend for the API, to make it easier to use. The frontend makes it possible to upload an image and get a prediction by implementing an HTML file.
 
 ### Question 29
 
@@ -600,7 +600,7 @@ Student s204259 was in charge of the unittesting and the dataprocessing.
 
 Student s224235 was in charge of setting up the google cloud bucket, training our models on the cloud and deploying them and building docker images. 
 
-Student s224227 was in charge of wrtting the code for the dataprocessing, API and API-testing. 
+Student s224227 was in charge of wrtting the code for the dataprocessing, uploading the data to the could, writing the API and creating the API-testing. 
 
 Student s224205 was in charge of the workflow triggers and building docker images.
 
