@@ -478,7 +478,7 @@ We used FastAPI to write the API. We made an API that can take an image as input
 
 We deployed our API locally first. To run the API locally the user would call: uvicorn src.image_classifier.api:app --reload
 
-Then the user can access the API on http://127.0.0.1:8000 and upload an image or it can be done by opening another terminal and calling the command: curl -X POST "http://127.0.0.1:8000/predict/" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "file=@/path/to/image.jpg"
+Then the user can access the API on http://127.0.0.1:8000 and upload an image.
 
 ### Question 25
 

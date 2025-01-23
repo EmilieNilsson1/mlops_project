@@ -9,6 +9,7 @@ from image_classifier.data import AnimalDataModule
 from image_classifier.translate import translate
 from google.cloud import storage
 from io import BytesIO
+from pathlib import Path
 import os
 from datetime import datetime
 
@@ -110,6 +111,3 @@ async def predict(request: Request, file: UploadFile = File(...)):
 # Run the API: uvicorn src.image_classifier.api:app --reload
 
 # Access the API: http://127.0.0.1:8000
-
-# predict picture with curl in new terminal:
-# curl -X POST "http://127.0.0.1:8000/predict/" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "file=@/path/to/image.jpg"
