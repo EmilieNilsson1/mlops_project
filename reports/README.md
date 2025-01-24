@@ -186,7 +186,7 @@ Alternatively, we also provided a Dockerfile to containerize the application, en
 >
 > Answer:
 
-From the cookiecutter template we have filled out the `configs`, `src`, `data`, `models`, `reports`, `tests`, and  `dockerfiles` folders. We have removed the `notebooks` and `docs` folders because we did not use any notebooks and did not write any documentation in our project. We have added an `outputs` folder that contains the logs for our experiments. We also added a `template` folder for the frontend to the API.
+From the cookiecutter template we have filled out the `configs`, `.github`, `src`, `data`, `reports`, `tests`, and  `dockerfiles` folders. We have removed the `notebooks` and `docs` folders because we did not use any notebooks and did not write any documentation in our project. We have added an `outputs` folder that contains the logs for our experiments saving every checkpoint, we used the `outputs` folder instead of the `models` folder. We also added a `templates` folder for the html document used for the frontend to the API. Overall the structure of our repository is similar to the cookiecutter template with a few added files such as `data_drift.py` to run certain parts more efficiently.
 
 
 ### Question 6
@@ -223,7 +223,7 @@ Linting and formatting ensures that the code looks the same throughout the entir
 >
 > Answer:
 
-We have implementet 13 pytest tests and 1 loadtest. We are testing the inference API, the data and the model. We are testing the most crucial parts of our application such as the datahandler, the different dimensions of tensors in the model, and the predictions and a loadtest of the API.
+We have implemented 13 pytest tests and 1 load test. These tests focus on the most critical parts of our application, including the inference API, data handling, and model behavior. We validate the functionality of the data handler, check the dimensions of tensors in the model, and ensure the accuracy of predictions. The load test assesses the performance and reliability of the API under high traffic, ensuring scalability and robustness.
 
 ### Question 8
 
@@ -239,6 +239,8 @@ We have implementet 13 pytest tests and 1 loadtest. We are testing the inference
 > Answer:
 
 The total coverage is 92% with the missing coverage being lines that are basically non-testable. Even if we had a 100% coverage we would not trust the code to be error free because we test some specific things and it is almost impossible to make unittests that ensures that all possible errors are covered.
+
+Fx. we haven't done any test on different file types as we would not expect this. If we wanted to fully secure the code we would have to create so many test that the pytest run would be inefficient. We have here decided to only do relevant test on the code that would ensure it could run effeciently in our given case. Instead we have in the code itself checks to ensure the user are not able to create any mistakes.
 
 ### Question 9
 
@@ -268,7 +270,7 @@ We made use of both branches and PRs in our project. In our group, each feature 
 >
 > Answer:
 
-We did not use DVC, because it did no make sense for our project. Version control of data is beneficial in scenarios where data is frequently updated or modified.
+We did not use DVC because it did not make sense for our project. Version control for data is most beneficial in scenarios where datasets are frequently updated, modified, or iteratively refined. In such cases, tools like DVC provide clear tracking of changes, ensure reproducibility, and facilitate collaboration by linking data versions to corresponding code updates. However, in our case, the data was static and did not require frequent revisions. One situation where it could have been useful would be if we added the images uploaded by users via the API for the classifier to process, analyze, and further train the dataset for improved accuracy.
 
 ### Question 11
 
@@ -285,10 +287,18 @@ We did not use DVC, because it did no make sense for our project. Version contro
 >
 > Answer:
 
-We run continuos integration on ubuntu latest, MacOS latest and windows latest, python 3.11 and 3.12, torch versions 2.5.1, 2.41.1, 2.3.1 and all of our unittesting. 
+We run continuos integration on multiple operating systems, python- and torch version: ubuntu latest, MacOS latest and windows latest, python 3.11 and 3.12, torch versions 2.5.1, 2.41.1, 2.3.1. For each combination we run all of our unit tests. Hereby it runs the pytest on each version to verify that the scripts are able to be run in different scenarios for the user. 
+
+We make use of caching in our workflows to improve efficiency. For example, dependency installation is cached to avoid redundant downloads and speed up the process. This is especially helpful when testing multiple Python and Torch versions. 
+
 We also made a configuation file that sets up a CI procces which is triggered by changes in our datafile. This trigger executes the train scrips and makes sure the model is always up to data with the newest data.
 
 An example of a triggered workflow can be seen here: https://github.com/EmilieNilsson1/mlops_project/actions/workflows/tests.yaml
+
+We also use pre-commit hooks as part of our continuous integration workflow to maintain good code practise, here we use `ruff` for linting and end-of-file-fixer and trailing-whitespace from the `pre-commit` repository amongst others. The pre-commit configuration is defined in the `.pre-commit-config.yaml` file. 
+
+These tools help os ensure well-tested code and keep `main` working. 
+
 
 ## Running code and tracking experiments
 
@@ -347,11 +357,11 @@ As the `outputs` folder is kept local this allows the team to track all experime
 >
 > Answer:
 
-As seen in the first image when have tracked the loss and accuracy of the model (both for training and validation). The loss and accuracy are important metrics to track because they inform us about how well the model is performing. The loss tells us how well the model is learning from the data and the accuracy tells us how well the model is able to make predictions. We track both training and validation to ensure we don't overfit on the data. 
+As seen in the first image we have tracked the training loss, validaition loss and training accuracy and validation accuracy of the model. We track both training and validation to ensure we don't overfit on the data. The loss and accuracy are important metrics to track because they inform us about how well the model is performing. A decreasing training loss indicates that the model is improving its performance on the training data. Validation loss, on the other hand, measures the model's error on unseen validation data. It helps us understand how well the model generalizes to new data. A decreasing validation loss indicates good generalization, while an increasing validation loss may suggest overfitting. Training accuracy helps us understand how well the model is learning from the training data, while validation accuracy indicates how well the model generalizes to unseen data.
 
-![WandB_loss](figures/wandb_loss.png)
+![WandB_loss](figures/WandB_loss.png)
 
-Below we have also included an image of how the hyperparameters are logged in weights and biases.
+In the second image, we have also included an image of how the hyperparameters are logged in Weights and Biases. Tracking the hyperparameters is important because it allows us to understand the impact of different configurations on the model's performance. By logging hyperparameters, we can easily compare different experiments and identify the best settings for our model.
 
 ![Wand_conf](figures/wand_config.png)
 
@@ -368,16 +378,17 @@ Below we have also included an image of how the hyperparameters are logged in we
 >
 > Answer:
 
-We have used docker in Cloud Run and when running Cloud Engine.
+We have used docker both for local development but also especially for deployment in te cloud. We have used docker in Cloud Run to deploy apis and when running Cloud Engine for training the model.
 
-We have a dockerfiles for training, one for inference api and one for data drift api. Each of these docker images download the requirements and copies the relevant files. 
+We have seperate dockerfiles; one for training, one for inference api and one for data drift api. Each of these docker images download the requirements and copies the relevant files and run the appropriate entry point script tailored for its specific purpose.
 
 To eg run training in docker, one would run 
 `docker run train:latest` 
 
 link to one docker file: https://github.com/EmilieNilsson1/mlops_project/blob/main/dockerfiles/train.dockerfile
 
-Artiffact docker image: 'docker run europe-west1-docker.pkg.dev/endless-galaxy-447815-e4/my-container/artifact-image:latest' 
+when working in the cloud we have saved our docker images to the artifact registry, and from here it can be run like:
+`docker run europe-west1-docker.pkg.dev/endless-galaxy-447815-e4/my-container/artifact-image:latest`
 
 ### Question 16
 
@@ -428,7 +439,8 @@ We made use of the following GCP services in our project: Engine, Bucket, Artifa
 >
 > Answer:
 
-We used the compute engine to run our training jobs. We used instances with the following hardware: n1-highmem-8 and we started the instances using a custom container: europe-west1-docker.pkg.dev/endless-galaxy-447815-e4/my-container/artifact-image:latest.
+We used the compute engine to test our training jobs, when the code ran without errors, we trained multiple models at the samme time using costum jobs in Vertex AI. We used an instances with the following hardware: n1-highmem-8, which has 8 vCPUs and 52 GB memory. This machine type is designed for memory-intensive workloads, however on further inspection it would probably have been wise to use a VM with GPU for faster model training. 
+To ensure a consistent and tailored environment, we started the instances using a custom container. The container image was pulled from our private artifact registry at: europe-west1-docker.pkg.dev/endless-galaxy-447815-e4/my-container/artifact-image:latest.
 
 ### Question 19
 
@@ -471,7 +483,7 @@ We used the compute engine to run our training jobs. We used instances with the 
 >
 > Answer:
 
-We managed to train our model in the cloud using Vertex AI. We did this by creating a custom container with our code and pushing its docker image to the Artifact Registry. We then created a costum job in Vertex AI that used the custom container to train the model. The reason we choose Vertex AI was because it allowed us to easily train our model in the cloud without having to worry about setting up the infrastructure ourselves.
+We managed to train our model in the cloud using Vertex AI. We did this by creating a custom container with our code and pushing its docker image to the Artifact Registry. We then created a custom job in Vertex AI that used the custom container to train the model. The reason we choose Vertex AI was because it allowed us to easily train our model in the cloud without having to worry about setting up the infrastructure ourselves. We had a few problems with the setup at first but ended up fixing it and created working models which was saved in the bucket together with the training data.
 
 ## Deployment
 
@@ -488,8 +500,7 @@ We managed to train our model in the cloud using Vertex AI. We did this by creat
 >
 > Answer:
 
-We used FastAPI to write the API. We made an API that can take an image as input and then use our trained model to predict which animal is shown in the image. We also created frontend so it is possible to upload an image from the computer and then get the prediction.
-
+We used FastAPI to write the API. We made an API that can take an image as input and then use our trained model to predict which animal is shown in the image. We also created frontend so it is possible to upload an image from the computer and then get the prediction. Together with this the api frontend made it possible for the user to view the image they would use and prior ones. Here we also saved the predcitions to the cloud for later use. We didn't focus too much on the design of the frontend but more on it's usability to the user.
 ### Question 24
 
 > **Did you manage to deploy your API, either in locally or cloud? If not, describe why. If yes, describe how and**
@@ -509,6 +520,9 @@ We deployed our API locally first. To run the API locally the user would call:
 
 Then the user can access the API on http://127.0.0.1:8000 and upload an image.
 
+
+Here we did most of the testing finding faults and bugs in the code that could be of detrement to the user. With the knowledge that the api could run locally with all the decired features and some checks to make the code more stable we decided to run it on the cloud to make it easier to access.
+
 Afterwards we deployed it to the cloud using Cloud Run by building a docker image, the service can be used following this link https://app-918145500414.europe-west1.run.app
 
 ### Question 25
@@ -524,7 +538,7 @@ Afterwards we deployed it to the cloud using Cloud Run by building a docker imag
 >
 > Answer:
 
-Yes we did both unittesting and load testing of the API. To do the unittesting we used pytest, testing for: . And to do the load test we used Locust to test the predict endpoint of the API by simulating users uploading images for prediction. The results of the load test is that the API is performing well with no failures and reasonable response times.
+We did both unit testing and load testing of the API. For unit testing, we used pytest to test various functionalities of the API. Specifically, we tested the root endpoint to ensure it is accessible and returns the correct status code and content. We also tested the predict endpoint by uploading an image and verifying that the response contains the expected prediction and uploaded image information. For load testing, we used Locust to test the predict endpoint of the API by simulating multiple users uploading images for prediction. The results of the load test showed that the API is performing well with no failures and reasonable response times, indicating that it can handle a significant number of concurrent requests without issues.
 
 ### Question 26
 
@@ -535,11 +549,12 @@ Yes we did both unittesting and load testing of the API. To do the unittesting w
 >
 > Example:
 > *We did not manage to implement monitoring. We would like to have monitoring implemented such that over time we could*
-> *measure ... and ... that would inform us about this ... behaviour of our application.*
+> *measure ... and ... that would inform us about this ... behaviour of our application.* 
 >
 > Answer:
-
 We have 3 alert policies to watch if the the bucket is filled with requests and if too many files are located in the bucket. This is done to check if anyone abuses the api or likewise. We also check the burn rate of the project to see if the uptime is high enough. The monitoring here is setup so we can watch these parts of the project more closely and would hereby be able to focus on the less optimized parts.
+
+If we had more time with the project we would have created more policies to protect the application from unforseen issues. This would also be usefull to optimize the application when running it in the cloud.
 
 ## Overall discussion of project
 
@@ -558,7 +573,7 @@ We have 3 alert policies to watch if the the bucket is filled with requests and 
 >
 > Answer:
 
-We have used around 25 dollars and the training was the thing that was most expensive seeing as we did it wrong the first time and didn't save it correctly. This meant that we had to do it five times using a lot of credits.
+We have used around 28 dollars total. The training was the thing that was most expensive seeing as we did it wrong the first time and didn't save it correctly. This meant that we had to do it five times using a lot of credits. This was done in VertexAI accounting for 10 dollars. Another 10 dollars was used on Cloud storage, and the remaining was used on Artifact, Run and Engine. Working in the cloud was frustrating at times, but we do see how it can be very useful, especially the option for data storage in Cloud storage as we don't know of an alternative to this. 
 
 ### Question 28
 
@@ -595,7 +610,8 @@ We also implemented data drifting. We calculated brightness, contrast, mean and 
 
 ![Pipeline](figures/image-3.png)
 
-The starting point here in our pipeline is the local device of the devs which is where the code is created and training data is kept originaly. From this point we have pre-commit check on new code followed by commit and push before anything is uploaded to Github. From GitHub pytest test if the scripts are able to be run on more systems and version. The training data is uploaded to Google Cloud Storage in a bucket where it is easily accessed. The github repository is then sent to Google Cloud where a container is created from which a docker image is made and able to be pulled by the user. In the Google Cloud we then are able to use the image and the training data to train models in Ai Vertex from which the model is saved in the same bucket. This can then be run by a Google Cloud run as a api which creates a frontend able to be used by users. This api then saves the tested images in the bucket with it's prediction.
+The starting point here in our pipeline is the local device of the devs which is where the code is created and training data is kept originaly. From this point we have pre-commit check on new code followed by commit and push before anything is uploaded to Github. When pushed to GitHub an Workflow script auto triggers the pytest which test if the scripts are able to be run on more systems and version. The devs can manually upload the training data to Google Cloud Storage in a bucket where it is easily accessed. 
+When code is pushed to the github and auto trigger then sent the repository to Google Cloud where a container is created from which a docker image is made and able to be pulled by the user. In the Google Cloud we are then able to use the image and the training data to train models in Ai Vertex from which the model is saved to artifact registry and then converted to a useable model in the same bucket. This can then be run by a Google Cloud run as an api which creates a frontend able to be used by users. This api then saves the tested images in the bucket with it's prediction.
 
 
 ### Question 30
@@ -610,9 +626,9 @@ The starting point here in our pipeline is the local device of the devs which is
 >
 > Answer:
 
-We have spent the most time trying to set things up on cloud and waiting for our model to train seeing as we also did the training multiple times. We also struggled with other functionalities of the Cloud, and especially how to combine these. It was a struggle to find the bucket when training, and finding the model checkpoint when deploying the inference api. To overcome the challenges we have asked the TA's or chatgpt for help.
+We have spent the most time trying to set things up on cloud and waiting for our model to train seeing as we also did the training multiple times. We also struggled with other functionalities of the Cloud, and especially how to combine these different services. It was a struggle to find the data in the bucket when training in cloud, and finding the model checkpoint when deploying the inference api. We found it difficult to debug in cloud aand also frustrating to have to wait a long time for an error. To overcome the challenges we have asked the TA's or chatgpt for help.
 
-Another struggle was delegating the different tasks in the project, as many tasks builds on one another, eg it is hard to work on training in the cloud if the bucket is not set up, or the final training script is not done. 
+Another struggle was delegating the different tasks in the project, as many tasks builds on one another, eg it is hard to work on training in the cloud if the bucket is not set up, or the final training script is not done. To overcome this we worked a lot with mock data, ie we uploaded a few images to the bucket or an old checkpoint such that we could continue working on other tasks while waiting for the dependencies to be fully completed. This allowed us to make progress on separate components of the project without being blocked by unfinished elements, ensuring that we could test parts of the workflow and stay on schedule.
 
 ### Question 31
 
