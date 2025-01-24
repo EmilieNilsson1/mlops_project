@@ -142,7 +142,7 @@ s204204, s204259, s224235, s224227, s224205
 >
 > Answer:
 
-We used the third-party framework 'TIMM' in our project. We used the functionality of the package to load pretrained models and to train our models. The package helped us to quickly load and train models, which saved us time on training and allowed us to focus on other parts of the project.
+We used the third-party framework 'TIMM' in our project, a PyTorch based package that offers pretrained models. We used the functionality of the package to load pretrained models and finetune them on our dataset. The package helped us to quickly load and train models, which saved us time on training and allowed us to focus on other parts of the project. We have used the ResNet18 model with pretrained weights and changed the prediction head (last linear layer) with a linear layer of random weights and output dimension 10, to fit our 10 classes dataset. 
 
 ## Coding environment
 
@@ -164,7 +164,13 @@ We used the third-party framework 'TIMM' in our project. We used the functionali
 
 We used a `requirements.txt` file to manage our dependencies. The file was auto-generated using `pip freeze > requirements.txt`. To get a complete copy of our development environment, one would have to run the following commands:
 
-conda create --<env_name> --file requirements.txt
+conda create --name <env_name> --file requirements.txt
+
+We have ensured that our project is compatible with both python 3.11 and 3.12 and windows-latest, macos-latest and ubuntu-latest. 
+
+If the new member where to change something in the code, it would also be required to install `requirements_dev.txt`and `requirements_tests.txt`
+
+Alternatively, we also provided a Dockerfile to containerize the application, ensuring an isolated and consistent environment. By running `docker build` and `docker run` commands, a new team member can quickly set up the exact same environment without manually managing dependencies, making it especially useful for deployment or cross-platform development.
 
 ### Question 5
 
@@ -217,7 +223,7 @@ Linting and formatting ensures that the code looks the same throughout the entir
 >
 > Answer:
 
-We have implementet 13 pytest tests and 1 loadtest. We are testing the API, the data and the model. We are testing the most crucial parts of our application such as the datahandler, the different steps of the model, and the predictions and a loadtest of the API.
+We have implementet 13 pytest tests and 1 loadtest. We are testing the inference API, the data and the model. We are testing the most crucial parts of our application such as the datahandler, the different dimensions of tensors in the model, and the predictions and a loadtest of the API.
 
 ### Question 8
 
@@ -247,7 +253,7 @@ The total coverage is 92% with the missing coverage being lines that are basical
 >
 > Answer:
 
-We made use of both branches and PRs in our project. In our group, each feature was developed on a separate branch. When the feature was completed, a PR was created to merge the feature branch into the main branch. This allowed us to work on different features simultaneously without interfering with each other's work.
+We made use of both branches and PRs in our project. In our group, each feature was developed on a separate branch. When the feature was completed, a PR was created to merge the feature branch into the main branch. This allowed us to work on different features simultaneously without interfering with each other's work and ensuring that the main branch remained stable and production-ready at all times. Before merging the PR, we ensured it had passed teh automated checks set up in our GitHub workflow, including pytest for running unit tests. This ensured that any new changes did not break existing functionality and met the project's quality standards. 
 
 ### Question 10
 
@@ -301,7 +307,7 @@ An example of a triggered workflow can be seen here: https://github.com/EmilieNi
 >
 > Answer:
 
-We used Hydra to configure our experiments. We created a single config file that contained all the hyperparameters for our experiments. To run an experiment, we would use the following command:
+We used Hydra to configure our experiments. We created a single config file that contained all the hyperparameters for our experiments. To run an experiment, we would modify the `configs/train.yaml` and use the following command:
 
 `python src\image_classifier\train.py`
 
@@ -320,7 +326,10 @@ We used Hydra to configure our experiments. We created a single config file that
 >
 > Answer:
 
-We made use of hydras config files to secure that no information is lost when running experiments and that our experiments are reproducible. Whenever an experiment is run, the config file is saved in the outputs folder. To reproduce an experiment, one would have to run the same command with the same config file.
+We made use of hydras config files to secure that no information is lost when running experiments and that our experiments are reproducible. Whenever an experiment is run, the config file is saved in the outputs folder. To reproduce an experiment, one would have to copy the config file into `train.yaml`and train the model again. 
+
+Further more, as we use Weights and Biases to log our experiments, we save the config file in W&B under configs for each run: 
+`pl.loggers.WandbLogger(project=os.getenv("WANDB_PROJECT"), entity=os.getenv("WANDB_ENTITY"), config=dict(cfg))`
 
 ### Question 14
 
@@ -337,9 +346,13 @@ We made use of hydras config files to secure that no information is lost when ru
 >
 > Answer:
 
-As seen in the first image when have tracked the loss and accuracy of the model. The loss and accuracy are important metrics to track because they inform us about how well the model is performing. The loss tells us how well the model is learning from the data and the accuracy tells us how well the model is able to make predictions.
+As seen in the first image when have tracked the loss and accuracy of the model (both for training and validation). The loss and accuracy are important metrics to track because they inform us about how well the model is performing. The loss tells us how well the model is learning from the data and the accuracy tells us how well the model is able to make predictions. We track both training and validation to ensure we don't overfit on the data. 
 
-[WandB_loss](figures/wandb_loss.png)
+![WandB_loss](figures/wandb_loss.png)
+
+Below we have also included an image of how the hyperparameters are logged in weights and biases.
+
+![Wand_conf](figures/wand_config.png)
 
 ### Question 15
 
@@ -361,6 +374,8 @@ We have a dockerfiles for training, one for inference api and one for data drift
 To eg run training in docker, one would run 
 `docker run train:latest` 
 
+link to one docker file: https://github.com/EmilieNilsson1/mlops_project/blob/main/dockerfiles/train.dockerfile
+
 Artiffact docker image: 'docker run europe-west1-docker.pkg.dev/endless-galaxy-447815-e4/my-container/artifact-image:latest' 
 
 ### Question 16
@@ -376,7 +391,9 @@ Artiffact docker image: 'docker run europe-west1-docker.pkg.dev/endless-galaxy-4
 >
 > Answer:
 
-We tried finding the bug and then used chatgpt or copilot or TA's to help debug the code. We didn't use the debugger which would have been optimal.
+We tried finding the bug and then used chatgpt or copilot or TA's to help debug the code. We occasionally used vscodes debugger, but didn't use it in its full potential.
+
+When encountering errors in Google Cloud we used the logs to debug. 
 
 We did try profiling some of our code, and didn't change anything. 
 
@@ -591,7 +608,9 @@ The starting point here in our pipeline is the local device of the devs which is
 >
 > Answer:
 
-We have spent the most time trying to set things up on cloud and waiting for our model to train seeing as we also did the training multiple times. To overcome the challenges we have asked the TA's or chatgpt for help.
+We have spent the most time trying to set things up on cloud and waiting for our model to train seeing as we also did the training multiple times. We also struggled with other functionalities of the Cloud, and especially how to combine these. It was a struggle to find the bucket when training, and finding the model checkpoint when deploying the inference api. To overcome the challenges we have asked the TA's or chatgpt for help.
+
+Another struggle was delegating the different tasks in the project, as many tasks builds on one another, eg it is hard to work on training in the cloud if the bucket is not set up, or the final training script is not done. 
 
 ### Question 31
 
@@ -609,7 +628,7 @@ We have spent the most time trying to set things up on cloud and waiting for our
 > *We have used ChatGPT to help debug our code. Additionally, we used GitHub Copilot to help write some of our code.*
 > Answer:
 
-Student s204204 was in charge of setting the initial cookie cutter project, writting the code for the model and the training, setting up the continous integration and checking for datadrifting, deployment to Google Run. 
+Student s204204 was in charge of setting the initial cookie cutter project, writting model and train scripts, setting up the continous integration, checking for datadrifting and deploymen
 
 Student s204259 was in charge of the unittesting, monitoring and the dataprocessing.
 
