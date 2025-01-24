@@ -69,7 +69,8 @@ def _train(cfg) -> None:
         max_epochs=cfg.hyperparameters.epochs,
         log_every_n_steps=cfg.hyperparameters.log_steps,
         logger=pl.loggers.WandbLogger(
-            project=os.getenv("WANDB_PROJECT"), entity=os.getenv("WANDB_ENTITY")
+            project=os.getenv("WANDB_PROJECT"), entity=os.getenv("WANDB_ENTITY"),
+            config=dict(cfg)
         ),
     )
     # Check if the GCS paths exist, if not fall back to local paths
