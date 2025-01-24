@@ -142,7 +142,7 @@ s204204, s204259, s224235, s224227, s224205
 >
 > Answer:
 
-We used the third-party framework 'TIMM' in our project, a PyTorch based package that offers pretrained models. We used the functionality of the package to load pretrained models and finetune them on our dataset. The package helped us to quickly load and train models, which saved us time on training and allowed us to focus on other parts of the project. We have used the ResNet18 model with pretrained weights and changed the prediction head (last linear layer) with a linear layer of random weights and output dimension 10, to fit our 10 classes dataset. 
+We used the third-party framework 'TIMM' in our project, a PyTorch based package that offers pretrained models. We used the functionality of the package to load pretrained models and later finetune them on our dataset. The package helped us to quickly load and train models, which saved us time on training and allowed us to focus on other parts of the project. We have used the ResNet18 model with pretrained weights and changed the prediction head (the last linear layer) to a linear layer with random weights and an output dimension of 10, to fit with the 10 classes in the dataset. 
 
 ## Coding environment
 
@@ -307,9 +307,9 @@ An example of a triggered workflow can be seen here: https://github.com/EmilieNi
 >
 > Answer:
 
-We used Hydra to configure our experiments. We created a single config file that contained all the hyperparameters for our experiments. To run an experiment, we would modify the `configs/train.yaml` and use the following command:
+We used Hydra to configure our experiments. We created a single config file that contained all the hyperparameters for our experiments - batch size, learning rate, seed, and epochs. To run an experiment, we would modify the `configs/train.yaml` and use the following command:
 
-`python src\image_classifier\train.py`
+`python src\image_classifier\train.py` or `python src\image_classifier\train.py --run local` to run the training locally instead of in the cloud.
 
 
 
@@ -326,10 +326,11 @@ We used Hydra to configure our experiments. We created a single config file that
 >
 > Answer:
 
-We made use of hydras config files to secure that no information is lost when running experiments and that our experiments are reproducible. Whenever an experiment is run, the config file is saved in the outputs folder. To reproduce an experiment, one would have to copy the config file into `train.yaml`and train the model again. 
+We made use of hydras config files to secure that no information is lost when running experiments and that our experiments are reproducible. Whenever an experiment is run, the config file is saved in the `outputs` folder. To reproduce an experiment, one would have to copy the config file into `train.yaml`and train the model again. 
 
-Further more, as we use Weights and Biases to log our experiments, we save the config file in W&B under configs for each run: 
+Further more, as we use Weights and Biases to log our experiments, we save the config file in Weights and Biases under configs for each run using: 
 `pl.loggers.WandbLogger(project=os.getenv("WANDB_PROJECT"), entity=os.getenv("WANDB_ENTITY"), config=dict(cfg))`
+As the `outputs` folder is kept local this allows the team to track all experiments as Weights and Biases can be used for team collaboration. 
 
 ### Question 14
 
@@ -395,7 +396,7 @@ We tried finding the bug and then used chatgpt or copilot or TA's to help debug 
 
 When encountering errors in Google Cloud we used the logs to debug. 
 
-We did try profiling some of our code, and didn't change anything. 
+We did try profiling some of our code, but didn't change anythings as it was not our main priority to optimize the code. Since we were using a pretrained model, most of the heavy lifting was already handled by PyTorch’s optimized back-end operations. Additionally, as we were using PyTorch Lightning, a lot of the boilerplate and optimization-related tasks were managed for us. If we were to optimize something it would be the data handling and dataloader. 
 
 ## Working in the cloud
 
@@ -470,7 +471,7 @@ We used the compute engine to run our training jobs. We used instances with the 
 >
 > Answer:
 
-We managed to train our model in the cloud using Vertex AI. We did this by creating a custom container with our code and pushing it to the Artifact Registry. We then created a costum job in Vertex AI that used the custom container to train the model. The reason we choose Vertex AI was because it allowed us to easily train our model in the cloud without having to worry about setting up the infrastructure ourselves.
+We managed to train our model in the cloud using Vertex AI. We did this by creating a custom container with our code and pushing its docker image to the Artifact Registry. We then created a costum job in Vertex AI that used the custom container to train the model. The reason we choose Vertex AI was because it allowed us to easily train our model in the cloud without having to worry about setting up the infrastructure ourselves.
 
 ## Deployment
 
@@ -503,7 +504,8 @@ We used FastAPI to write the API. We made an API that can take an image as input
 >
 > Answer:
 
-We deployed our API locally first. To run the API locally the user would call: uvicorn src.image_classifier.api:app --reload
+We deployed our API locally first. To run the API locally the user would call: 
+`uvicorn src.image_classifier.api:app --reload`
 
 Then the user can access the API on http://127.0.0.1:8000 and upload an image.
 
