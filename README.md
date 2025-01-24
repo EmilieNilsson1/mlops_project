@@ -7,6 +7,25 @@ We will be using the dataset from Kaggle (https://www.kaggle.com/datasets/alessi
 
 We initially plan to use a pretrained ResNet18.
 
+## Installation
+Clone the repository using
+
+`git clone https://github.com/EmilieNilsson1/mlops_project.git`
+
+initialize an environment and install the dependencies using 
+
+`conda create --name <env_name> --file requirements.txt`
+
+## Usage
+Firstly download the data from kaggle (if you want to run locally) and run `src/image_classifier/data.py` to preprocess the data.
+
+To configure a new experiment change the hyperparameters in `configs/train.yaml` and add you wandb information to a `.env`. 
+
+To run a training in the cloud with this command:
+`python src/image_classifier/train.py` or simply `train`.
+If you do not have access to our cloud the training can be run locally using the command:
+`python src/image_classifier/train.py --run local`
+
 ## Project structure
 
 The directory structure of the project looks like this:
